@@ -2,7 +2,7 @@
 #[cfg(any(
     freebsdlike,
     all(
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         not(any(target_env = "uclibc", target_env = "ohos"))
     ),
     apple_targets,
@@ -28,7 +28,7 @@ feature! {
     pub mod eventfd;
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 feature! {
     #![feature = "fanotify"]
     pub mod fanotify;
@@ -58,13 +58,13 @@ feature! {
     pub mod mman;
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 feature! {
     #![feature = "personality"]
     pub mod personality;
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 feature! {
     #![feature = "process"]
     pub mod prctl;
@@ -82,13 +82,13 @@ feature! {
     pub mod ptrace;
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 feature! {
     #![feature = "quota"]
     pub mod quota;
 }
 
-#[cfg(any(target_os = "linux", netbsdlike))]
+#[cfg(any(any(target_os = "linux", target_os = "runixos", target_os = "runixos"), netbsdlike))]
 feature! {
     #![feature = "reboot"]
     pub mod reboot;
@@ -198,7 +198,7 @@ feature! {
     any(
         target_os = "freebsd",
         solarish,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "netbsd"
     ),
     feature = "time",

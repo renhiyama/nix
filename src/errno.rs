@@ -28,7 +28,7 @@ cfg_if! {
         unsafe fn errno_location() -> *mut c_int {
             unsafe { libc::__errno() }
         }
-    } else if #[cfg(any(target_os = "linux",
+    } else if #[cfg(any(any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
                         target_os = "redox",
                         target_os = "dragonfly",
                         target_os = "fuchsia",
@@ -826,14 +826,14 @@ fn desc(errno: Errno) -> &'static str {
         ENOTRECOVERABLE => "Lock is not recoverable",
 
         #[cfg(any(
-            all(target_os = "linux", not(target_arch = "mips")),
+            all(any(target_os = "linux", target_os = "runixos", target_os = "runixos"), not(target_arch = "mips")),
             target_os = "fuchsia",
             target_os = "emscripten",
         ))]
         ERFKILL => "Operation not possible due to RF-kill",
 
         #[cfg(any(
-            all(target_os = "linux", not(target_arch = "mips")),
+            all(any(target_os = "linux", target_os = "runixos", target_os = "runixos"), not(target_arch = "mips")),
             target_os = "fuchsia",
             target_os = "emscripten",
         ))]

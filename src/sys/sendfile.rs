@@ -55,7 +55,7 @@ pub fn sendfile<F1: AsFd, F2: AsFd>(
 /// `in_fd` must support `mmap`-like operations and therefore cannot be a socket.
 ///
 /// For more information, see [the sendfile(2) man page.](https://man7.org/linux/man-pages/man2/sendfile.2.html)
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 pub fn sendfile64<F1: AsFd, F2: AsFd>(
     out_fd: F1,
     in_fd: F2,

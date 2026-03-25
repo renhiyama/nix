@@ -111,11 +111,11 @@ libc_bitflags! {
 #[cfg(any(
     feature = "fs",
     feature = "term",
-    all(feature = "fanotify", target_os = "linux")
+    all(feature = "fanotify", any(target_os = "linux", target_os = "runixos", target_os = "runixos"))
 ))]
 libc_bitflags!(
     /// Configuration options for opened files.
-    #[cfg_attr(docsrs, doc(cfg(any(feature = "fs", feature = "term", all(feature = "fanotify", target_os = "linux")))))]
+    #[cfg_attr(docsrs, doc(cfg(any(feature = "fs", feature = "term", all(feature = "fanotify", any(target_os = "linux", target_os = "runixos", target_os = "runixos"))))))]
     pub struct OFlag: c_int {
         /// Mask for the access mode of the file.
         O_ACCMODE;
@@ -161,7 +161,7 @@ libc_bitflags!(
         O_EXLOCK;
         /// Same as `O_SYNC`.
         #[cfg(any(bsd,
-                  all(target_os = "linux", not(target_env = "musl"), not(target_env = "ohos")),
+                  all(any(target_os = "linux", target_os = "runixos", target_os = "runixos"), not(target_env = "musl"), not(target_env = "ohos")),
                   target_os = "redox"))]
         O_FSYNC;
         /// Allow files whose sizes can't be represented in an `off_t` to be opened.
@@ -197,7 +197,7 @@ libc_bitflags!(
         /// This should not be combined with `O_WRONLY` or `O_RDONLY`.
         O_RDWR;
         /// Similar to `O_DSYNC` but applies to `read`s instead.
-        #[cfg(any(target_os = "linux", netbsdlike))]
+        #[cfg(any(any(target_os = "linux", target_os = "runixos", target_os = "runixos"), netbsdlike))]
         O_RSYNC;
         /// Open directory for search only. Skip search permission checks on
         /// later `openat()` calls using the obtained file descriptor.
@@ -292,7 +292,7 @@ pub fn openat<P: ?Sized + NixPath, Fd: std::os::fd::AsFd>(
 }
 
 cfg_if::cfg_if! {
-    if #[cfg(target_os = "linux")] {
+    if #[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))] {
         libc_bitflags! {
             /// Path resolution flags.
             ///
@@ -444,7 +444,7 @@ pub fn renameat<P1: ?Sized + NixPath, P2: ?Sized + NixPath, Fd1: std::os::fd::As
 }
 }
 
-#[cfg(all(target_os = "linux", target_env = "gnu"))]
+#[cfg(all(any(target_os = "linux", target_os = "runixos", target_os = "runixos"), target_env = "gnu"))]
 #[cfg(feature = "fs")]
 libc_bitflags! {
     /// Flags for use with [`renameat2`].
@@ -471,7 +471,7 @@ feature! {
 ///
 /// # See Also
 /// * [`rename`](https://man7.org/linux/man-pages/man2/rename.2.html)
-#[cfg(all(target_os = "linux", target_env = "gnu"))]
+#[cfg(all(any(target_os = "linux", target_os = "runixos", target_os = "runixos"), target_env = "gnu"))]
 pub fn renameat2<P1: ?Sized + NixPath, P2: ?Sized + NixPath, Fd1: std::os::fd::AsFd, Fd2: std::os::fd::AsFd>(
     old_dirfd: Fd1,
     old_path: &P1,
@@ -1333,7 +1333,7 @@ pub fn vmsplice<F: std::os::fd::AsFd>(
 }
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 #[cfg(feature = "fs")]
 libc_bitflags!(
     /// Mode argument flags for fallocate determining operation performed on a given range.
@@ -1373,7 +1373,7 @@ feature! {
 ///
 /// Allows the caller to directly manipulate the allocated disk space for the
 /// file referred to by fd.
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 #[cfg(feature = "fs")]
 pub fn fallocate<Fd: std::os::fd::AsFd>(
     fd: Fd,

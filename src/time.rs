@@ -140,7 +140,7 @@ impl ClockId {
         target_os = "emscripten",
         target_os = "fuchsia",
         all(
-            target_os = "linux",
+            any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
             any(target_env = "musl", target_env = "ohos")
         )
     ))]

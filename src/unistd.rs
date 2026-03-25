@@ -661,7 +661,7 @@ pub unsafe fn dup2_raw<Fd1: std::os::fd::AsFd, Fd2: std::os::fd::IntoRawFd>(oldf
     target_os = "freebsd",
     target_os = "fuchsia",
     target_os = "hurd",
-    target_os = "linux"
+    any(target_os = "linux", target_os = "runixos", target_os = "runixos")
 ))]
 pub fn dup3<Fd: std::os::fd::AsFd>(oldfd: Fd, newfd: &mut std::os::fd::OwnedFd, flags: OFlag) -> Result<()> {
     use std::os::fd::AsRawFd;
@@ -700,7 +700,7 @@ pub fn dup3<Fd: std::os::fd::AsFd>(oldfd: Fd, newfd: &mut std::os::fd::OwnedFd, 
     target_os = "freebsd",
     target_os = "fuchsia",
     target_os = "hurd",
-    target_os = "linux"
+    any(target_os = "linux", target_os = "runixos", target_os = "runixos")
 ))]
 pub unsafe fn dup3_raw<Fd1: std::os::fd::AsFd, Fd2: std::os::fd::IntoRawFd>(oldfd: Fd1, newfd: Fd2, flags: OFlag) -> Result<std::os::fd::OwnedFd> {
     use std::os::fd::AsRawFd;
@@ -1163,7 +1163,7 @@ pub fn execvp<S: AsRef<CStr>>(
 /// This functions like a combination of `execvp(2)` and `execve(2)` to pass an
 /// environment and have a search path. See these two for additional
 /// information.
-#[cfg(any(target_os = "haiku", target_os = "hurd", target_os = "linux", target_os = "openbsd"))]
+#[cfg(any(target_os = "haiku", target_os = "hurd", any(target_os = "linux", target_os = "runixos", target_os = "runixos"), target_os = "openbsd"))]
 pub fn execvpe<SA: AsRef<CStr>, SE: AsRef<CStr>>(
     filename: &CStr,
     args: &[SA],
@@ -1413,7 +1413,7 @@ pub enum Whence {
         freebsdlike,
         solarish,
         target_os = "hurd",
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
     ))]
     SeekData = libc::SEEK_DATA,
     /// Specify an offset relative to the next hole in the file greater than
@@ -1426,7 +1426,7 @@ pub enum Whence {
         freebsdlike,
         solarish,
         target_os = "hurd",
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
     ))]
     SeekHole = libc::SEEK_HOLE,
 }
@@ -1484,7 +1484,7 @@ feature! {
 ///
 /// - `O_CLOEXEC`:    Set the close-on-exec flag for the new file descriptors.
 #[cfg_attr(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
     doc = "- `O_DIRECT`: Create a pipe that performs I/O in \"packet\" mode."
 )]
 #[cfg_attr(
@@ -2354,7 +2354,7 @@ pub enum PathconfVar {
     #[cfg(any(
         freebsdlike,
         netbsdlike,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "redox"
     ))]
     /// Minimum number of bits needed to represent, as a signed integer value,
@@ -2643,7 +2643,7 @@ pub enum SysconfVar {
     /// the expr utility.
     #[cfg(not(any(target_os = "redox", target_os = "haiku")))]
     EXPR_NEST_MAX = libc::_SC_EXPR_NEST_MAX,
-    #[cfg(any(bsd, solarish, target_os = "linux"))]
+    #[cfg(any(bsd, solarish, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// Maximum length of a host name (not including the terminating null) as
     /// returned from the `gethostname` function
     HOST_NAME_MAX = libc::_SC_HOST_NAME_MAX,
@@ -2680,21 +2680,21 @@ pub enum SysconfVar {
     #[cfg(any(
         freebsdlike,
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     /// The implementation supports the Advisory Information option.
     _POSIX_ADVISORY_INFO = libc::_SC_ADVISORY_INFO,
-    #[cfg(any(bsd, solarish, target_os = "linux"))]
+    #[cfg(any(bsd, solarish, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation supports barriers.
     _POSIX_BARRIERS = libc::_SC_BARRIERS,
     /// The implementation supports asynchronous input and output.
     #[cfg(not(any(target_os = "redox", target_os = "haiku")))]
     _POSIX_ASYNCHRONOUS_IO = libc::_SC_ASYNCHRONOUS_IO,
-    #[cfg(any(bsd, solarish, target_os = "linux"))]
+    #[cfg(any(bsd, solarish, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation supports clock selection.
     _POSIX_CLOCK_SELECTION = libc::_SC_CLOCK_SELECTION,
-    #[cfg(any(bsd, solarish, target_os = "linux"))]
+    #[cfg(any(bsd, solarish, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation supports the Process CPU-Time Clocks option.
     _POSIX_CPUTIME = libc::_SC_CPUTIME,
     /// The implementation supports the File Synchronization option.
@@ -2704,7 +2704,7 @@ pub enum SysconfVar {
         freebsdlike,
         apple_targets,
         solarish,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd",
     ))]
     /// The implementation supports the IPv6 option.
@@ -2746,7 +2746,7 @@ pub enum SysconfVar {
         freebsdlike,
         solarish,
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd",
     ))]
     /// The implementation supports the Raw Sockets option.
@@ -2754,7 +2754,7 @@ pub enum SysconfVar {
     #[cfg(any(
         bsd,
         solarish,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
     ))]
     /// The implementation supports read-write locks.
     _POSIX_READER_WRITER_LOCKS = libc::_SC_READER_WRITER_LOCKS,
@@ -2769,7 +2769,7 @@ pub enum SysconfVar {
     #[cfg(any(
         bsd,
         solarish,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
     ))]
     /// The implementation supports the Regular Expression Handling option.
     _POSIX_REGEXP = libc::_SC_REGEXP,
@@ -2782,19 +2782,19 @@ pub enum SysconfVar {
     /// The implementation supports the Shared Memory Objects option.
     #[cfg(not(any(target_os = "redox", target_os = "haiku")))]
     _POSIX_SHARED_MEMORY_OBJECTS = libc::_SC_SHARED_MEMORY_OBJECTS,
-    #[cfg(any(bsd, target_os = "linux",))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos"),))]
     /// The implementation supports the POSIX shell.
     _POSIX_SHELL = libc::_SC_SHELL,
-    #[cfg(any(bsd, target_os = "linux",))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos"),))]
     /// The implementation supports the Spawn option.
     _POSIX_SPAWN = libc::_SC_SPAWN,
-    #[cfg(any(bsd, target_os = "linux",))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos"),))]
     /// The implementation supports spin locks.
     _POSIX_SPIN_LOCKS = libc::_SC_SPIN_LOCKS,
     #[cfg(any(
         freebsdlike,
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     /// The implementation supports the Process Sporadic Server option.
@@ -2803,7 +2803,7 @@ pub enum SysconfVar {
     /// sporadic server scheduler.
     #[cfg(any(
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     _POSIX_SS_REPL_MAX = libc::_SC_SS_REPL_MAX,
@@ -2818,7 +2818,7 @@ pub enum SysconfVar {
     _POSIX_THREAD_ATTR_STACKSIZE = libc::_SC_THREAD_ATTR_STACKSIZE,
     #[cfg(any(
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         netbsdlike,
     ))]
     /// The implementation supports the Thread CPU-Time Clocks option.
@@ -2833,20 +2833,20 @@ pub enum SysconfVar {
     /// The implementation supports the Thread Execution Scheduling option.
     #[cfg(not(target_os = "redox"))]
     _POSIX_THREAD_PRIORITY_SCHEDULING = libc::_SC_THREAD_PRIORITY_SCHEDULING,
-    #[cfg(any(bsd, target_os = "linux"))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation supports the Thread Process-Shared Synchronization
     /// option.
     _POSIX_THREAD_PROCESS_SHARED = libc::_SC_THREAD_PROCESS_SHARED,
     #[cfg(any(
         target_os = "dragonfly",
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     /// The implementation supports the Robust Mutex Priority Inheritance option.
     _POSIX_THREAD_ROBUST_PRIO_INHERIT = libc::_SC_THREAD_ROBUST_PRIO_INHERIT,
     #[cfg(any(
         target_os = "dragonfly",
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     /// The implementation supports the Robust Mutex Priority Protection option.
@@ -2857,7 +2857,7 @@ pub enum SysconfVar {
     #[cfg(any(
         freebsdlike,
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     /// The implementation supports the Thread Sporadic Server option.
@@ -2868,7 +2868,7 @@ pub enum SysconfVar {
     #[cfg(any(
         freebsdlike,
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     /// The implementation supports timeouts.
@@ -2879,7 +2879,7 @@ pub enum SysconfVar {
     #[cfg(any(
         freebsdlike,
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     /// The implementation supports the Trace option.
@@ -2887,7 +2887,7 @@ pub enum SysconfVar {
     #[cfg(any(
         freebsdlike,
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     /// The implementation supports the Trace Event Filter option.
@@ -2895,14 +2895,14 @@ pub enum SysconfVar {
     /// Maximum size of a trace event name in characters.
     #[cfg(any(
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     _POSIX_TRACE_EVENT_NAME_MAX = libc::_SC_TRACE_EVENT_NAME_MAX,
     #[cfg(any(
         freebsdlike,
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     /// The implementation supports the Trace Inherit option.
@@ -2910,7 +2910,7 @@ pub enum SysconfVar {
     #[cfg(any(
         freebsdlike,
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     /// The implementation supports the Trace Log option.
@@ -2918,7 +2918,7 @@ pub enum SysconfVar {
     /// The length in bytes of a trace generation version string or a trace stream name.
     #[cfg(any(
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     _POSIX_TRACE_NAME_MAX = libc::_SC_TRACE_NAME_MAX,
@@ -2926,21 +2926,21 @@ pub enum SysconfVar {
     /// processes.
     #[cfg(any(
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     _POSIX_TRACE_SYS_MAX = libc::_SC_TRACE_SYS_MAX,
     /// Maximum number of user trace event type identifiers for a single process.
     #[cfg(any(
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     _POSIX_TRACE_USER_EVENT_MAX = libc::_SC_TRACE_USER_EVENT_MAX,
     #[cfg(any(
         freebsdlike,
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     /// The implementation supports the Typed Memory Objects option.
@@ -2949,20 +2949,20 @@ pub enum SysconfVar {
     /// to which the implementation conforms. For implementations conforming to
     /// POSIX.1-2008, the value shall be 200809L.
     _POSIX_VERSION = libc::_SC_VERSION,
-    #[cfg(any(bsd, target_os = "linux"))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation provides a C-language compilation environment with
     /// 32-bit `int`, `long`, `pointer`, and `off_t` types.
     _POSIX_V6_ILP32_OFF32 = libc::_SC_V6_ILP32_OFF32,
-    #[cfg(any(bsd, target_os = "linux"))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation provides a C-language compilation environment with
     /// 32-bit `int`, `long`, and pointer types and an `off_t` type using at
     /// least 64 bits.
     _POSIX_V6_ILP32_OFFBIG = libc::_SC_V6_ILP32_OFFBIG,
-    #[cfg(any(bsd, target_os = "linux"))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation provides a C-language compilation environment with
     /// 32-bit `int` and 64-bit `long`, `pointer`, and `off_t` types.
     _POSIX_V6_LP64_OFF64 = libc::_SC_V6_LP64_OFF64,
-    #[cfg(any(bsd, target_os = "linux"))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation provides a C-language compilation environment with an
     /// `int` type using at least 32 bits and `long`, pointer, and `off_t` types
     /// using at least 64 bits.
@@ -2986,23 +2986,23 @@ pub enum SysconfVar {
     /// utility.
     #[cfg(not(any(target_os = "redox", target_os = "haiku")))]
     _POSIX2_LOCALEDEF = libc::_SC_2_LOCALEDEF,
-    #[cfg(any(bsd, target_os = "linux"))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation supports the Batch Environment Services and Utilities
     /// option.
     _POSIX2_PBS = libc::_SC_2_PBS,
-    #[cfg(any(bsd, target_os = "linux"))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation supports the Batch Accounting option.
     _POSIX2_PBS_ACCOUNTING = libc::_SC_2_PBS_ACCOUNTING,
-    #[cfg(any(bsd, target_os = "linux"))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation supports the Batch Checkpoint/Restart option.
     _POSIX2_PBS_CHECKPOINT = libc::_SC_2_PBS_CHECKPOINT,
-    #[cfg(any(bsd, target_os = "linux"))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation supports the Locate Batch Job Request option.
     _POSIX2_PBS_LOCATE = libc::_SC_2_PBS_LOCATE,
-    #[cfg(any(bsd, target_os = "linux"))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation supports the Batch Job Message Request option.
     _POSIX2_PBS_MESSAGE = libc::_SC_2_PBS_MESSAGE,
-    #[cfg(any(bsd, target_os = "linux"))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     /// The implementation supports the Track Batch Job Request option.
     _POSIX2_PBS_TRACK = libc::_SC_2_PBS_TRACK,
     /// The implementation supports the Software Development Utilities option.
@@ -3069,7 +3069,7 @@ pub enum SysconfVar {
     STREAM_MAX = libc::_SC_STREAM_MAX,
     /// Maximum number of symbolic links that can be reliably traversed in the resolution of a
     /// pathname in the absence of a loop.
-    #[cfg(any(bsd, target_os = "linux"))]
+    #[cfg(any(bsd, any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
     SYMLOOP_MAX = libc::_SC_SYMLOOP_MAX,
     /// Maximum number of timers per process supported.
     #[cfg(not(target_os = "redox"))]
@@ -3128,7 +3128,7 @@ pub enum SysconfVar {
     #[cfg(any(
         freebsdlike,
         apple_targets,
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos", target_os = "runixos"),
         target_os = "openbsd"
     ))]
     /// The implementation supports the XSI STREAMS Option Group.
@@ -3469,7 +3469,7 @@ pub fn faccessat<Fd: std::os::fd::AsFd, P: ?Sized + NixPath>(
 /// * [Linux man page](https://man7.org/linux/man-pages/man3/euidaccess.3.html)
 #[cfg(any(
     freebsdlike,
-    all(target_os = "linux", not(target_env = "uclibc")),
+    all(any(target_os = "linux", target_os = "runixos", target_os = "runixos"), not(target_env = "uclibc")),
 ))]
 pub fn eaccess<P: ?Sized + NixPath>(path: &P, mode: AccessFlags) -> Result<()> {
     let res = path.with_nix_path(|cstr| unsafe {
@@ -3914,8 +3914,8 @@ impl Group {
     /// # Examples
     ///
     // Disable this test on all OS except Linux as root group may not exist.
-    #[cfg_attr(not(target_os = "linux"), doc = " ```no_run")]
-    #[cfg_attr(target_os = "linux", doc = " ```")]
+    #[cfg_attr(not(any(target_os = "linux", target_os = "runixos", target_os = "runixos")), doc = " ```no_run")]
+    #[cfg_attr(any(target_os = "linux", target_os = "runixos", target_os = "runixos"), doc = " ```")]
     /// use nix::unistd::{Gid, Group};
     /// // Returns an Result<Option<Group>>, thus the double unwrap.
     /// let res = Group::from_gid(Gid::from_raw(0)).unwrap().unwrap();
@@ -3939,8 +3939,8 @@ impl Group {
     /// # Examples
     ///
     // Disable this test on all OS except Linux as root group may not exist.
-    #[cfg_attr(not(target_os = "linux"), doc = " ```no_run")]
-    #[cfg_attr(target_os = "linux", doc = " ```")]
+    #[cfg_attr(not(any(target_os = "linux", target_os = "runixos", target_os = "runixos")), doc = " ```no_run")]
+    #[cfg_attr(any(target_os = "linux", target_os = "runixos", target_os = "runixos"), doc = " ```")]
     /// use nix::unistd::Group;
     /// // Returns an Result<Option<Group>>, thus the double unwrap.
     /// let res = Group::from_name("root").unwrap().unwrap();

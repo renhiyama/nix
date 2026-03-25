@@ -17,7 +17,7 @@ use std::os::unix::io::{AsFd, AsRawFd};
 
 // Constants
 // TCP_CA_NAME_MAX isn't defined in user space include files
-#[cfg(any(target_os = "freebsd", target_os = "linux"))]
+#[cfg(any(target_os = "freebsd", any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
 #[cfg(feature = "net")]
 const TCP_CA_NAME_MAX: usize = 16;
 
@@ -479,7 +479,7 @@ sockopt_impl!(
     libc::IP_MULTICAST_LOOP,
     bool
 );
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 #[cfg(feature = "net")]
 sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
@@ -681,7 +681,7 @@ sockopt_impl!(
     libc::SO_PEERCRED,
     super::UnixCredentials
 );
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 sockopt_impl!(
     /// Return the pidfd of the foreign process connected to this socket.
     PeerPidfd,
@@ -777,7 +777,7 @@ sockopt_impl!(
     libc::TCP_KEEPINTVL,
     u32
 );
-#[cfg(any(target_os = "fuchsia", target_os = "linux"))]
+#[cfg(any(target_os = "fuchsia", any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
 #[cfg(feature = "net")]
 sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
@@ -1016,7 +1016,7 @@ sockopt_impl!(
     libc::SO_ACCEPTFILTER,
     libc::accept_filter_arg
 );
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 sockopt_impl!(
     /// Set the mark for each packet sent through this socket (similar to the
     /// netfilter MARK target but socket-based).
@@ -1036,7 +1036,7 @@ sockopt_impl!(
     libc::SO_PASSCRED,
     bool
 );
-#[cfg(any(target_os = "freebsd", target_os = "linux"))]
+#[cfg(any(target_os = "freebsd", any(target_os = "linux", target_os = "runixos", target_os = "runixos")))]
 #[cfg(feature = "net")]
 sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
@@ -1145,7 +1145,7 @@ sockopt_impl!(
     libc::UDP_GRO,
     bool
 );
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 sockopt_impl!(
     /// Configures the behavior of time-based transmission of packets, for use
     /// with the `TxTime` control message.
@@ -1303,7 +1303,7 @@ sockopt_impl!(
     libc::SO_EXCLBIND,
     bool
 );
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 sockopt_impl!(
     /// To be used with `ReusePort`,
     /// we can then attach a BPF (classic)
@@ -1424,7 +1424,7 @@ where
 }
 
 /// Value used with the [`TcpTlsTx`] and [`TcpTlsRx`] socket options.
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 #[derive(Copy, Clone, Debug)]
 pub enum TlsCryptoInfo {
     /// AES-128-GCM
@@ -1450,11 +1450,11 @@ pub enum TlsCryptoInfo {
 /// ```ignore,rust
 /// setsockopt(sock, TcpTlsTx, &crypto_info);
 /// ```
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 #[derive(Copy, Clone, Debug)]
 pub struct TcpTlsTx;
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 impl SetSockOpt for TcpTlsTx {
     type Val = TlsCryptoInfo;
 
@@ -1496,11 +1496,11 @@ impl SetSockOpt for TcpTlsTx {
 /// ```ignore,rust
 /// setsockopt(sock, TcpTlsRx, &crypto_info);
 /// ```
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 #[derive(Copy, Clone, Debug)]
 pub struct TcpTlsRx;
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "runixos"))]
 impl SetSockOpt for TcpTlsRx {
     type Val = TlsCryptoInfo;
 

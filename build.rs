@@ -7,7 +7,7 @@ fn main() {
         ios: { target_os = "ios" },
         freebsd: { target_os = "freebsd" },
         illumos: { target_os = "illumos" },
-        linux: { target_os = "linux" },
+        linux: { any(target_os = "linux", target_os = "runixos") },
         macos: { target_os = "macos" },
         netbsd: { target_os = "netbsd" },
         openbsd: { target_os = "openbsd" },
