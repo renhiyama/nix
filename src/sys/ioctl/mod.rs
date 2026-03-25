@@ -121,11 +121,11 @@
 //!
 //! ```
 //! # #[macro_use] extern crate nix;
-//! # #[cfg(any(target_os = "android", target_os = "linux"))]
+//! # #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 //! # use nix::libc::TCGETS as TCGETS;
-//! # #[cfg(any(target_os = "android", target_os = "linux"))]
+//! # #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 //! # use nix::libc::termios as termios;
-//! # #[cfg(any(target_os = "android", target_os = "linux"))]
+//! # #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 //! ioctl_read_bad!(tcgets, TCGETS, termios);
 //! # fn main() {}
 //! ```
@@ -223,11 +223,11 @@
 //! ```
 use cfg_if::cfg_if;
 
-#[cfg(any(target_os = "android", target_os = "linux", target_os = "redox"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos"), target_os = "redox"))]
 #[macro_use]
 mod linux;
 
-#[cfg(any(target_os = "android", target_os = "linux", target_os = "redox"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos"), target_os = "redox"))]
 pub use self::linux::*;
 
 #[cfg(any(target_os = "dragonfly",
@@ -400,7 +400,7 @@ macro_rules! ioctl_read {
 ///
 /// ```
 /// # #[macro_use] extern crate nix;
-/// # #[cfg(any(target_os = "android", target_os = "linux"))]
+/// # #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 /// ioctl_read_bad!(tcgets, libc::TCGETS, libc::termios);
 /// # fn main() {}
 /// ```
@@ -473,7 +473,7 @@ macro_rules! ioctl_write_ptr {
 ///
 /// ```
 /// # #[macro_use] extern crate nix;
-/// # #[cfg(any(target_os = "android", target_os = "linux"))]
+/// # #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 /// ioctl_write_ptr_bad!(tcsets, libc::TCSETS, libc::termios);
 /// # fn main() {}
 /// ```
@@ -592,7 +592,7 @@ cfg_if!{
 ///
 /// ```
 /// # #[macro_use] extern crate nix;
-/// # #[cfg(any(target_os = "android", target_os = "linux"))]
+/// # #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 /// ioctl_write_int_bad!(tcsbrk, libc::TCSBRK);
 /// # fn main() {}
 /// ```

@@ -17,7 +17,7 @@ use std::os::unix::ffi::OsStrExt;
 
 // Constants
 // TCP_CA_NAME_MAX isn't defined in user space include files
-#[cfg(any(target_os = "freebsd", target_os = "linux"))]
+#[cfg(any(target_os = "freebsd", any(target_os = "linux", target_os = "runixos")))]
 #[cfg(feature = "net")]
 const TCP_CA_NAME_MAX: usize = 16;
 
@@ -288,7 +288,7 @@ sockopt_impl!(
     IpDropMembership, SetOnly, libc::IPPROTO_IP, libc::IP_DROP_MEMBERSHIP,
     super::IpMembershipRequest);
 cfg_if! {
-    if #[cfg(any(target_os = "android", target_os = "linux"))] {
+    if #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))] {
         #[cfg(feature = "net")]
         sockopt_impl!(
             #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
@@ -333,7 +333,7 @@ sockopt_impl!(
     /// Set or read a boolean integer argument that determines whether sent
     /// multicast packets should be looped back to the local sockets.
     IpMulticastLoop, Both, libc::IPPROTO_IP, libc::IP_MULTICAST_LOOP, bool);
-#[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+#[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
 #[cfg(feature = "net")]
 sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
@@ -369,7 +369,7 @@ sockopt_impl!(
     /// Get the credentials of the peer process of a connected unix domain
     /// socket.
     LocalPeerCred, GetOnly, 0, libc::LOCAL_PEERCRED, super::XuCred);
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 sockopt_impl!(
     /// Return the credentials of the foreign process connected to this socket.
     PeerCredentials, GetOnly, libc::SOL_SOCKET, libc::SO_PEERCRED, super::UnixCredentials);
@@ -384,7 +384,7 @@ sockopt_impl!(
 #[cfg(any(target_os = "android",
           target_os = "dragonfly",
           target_os = "freebsd",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "nacl"))]
 #[cfg(feature = "net")]
 sockopt_impl!(
@@ -393,7 +393,7 @@ sockopt_impl!(
     /// starts sending keepalive probes
     TcpKeepIdle, Both, libc::IPPROTO_TCP, libc::TCP_KEEPIDLE, u32);
 cfg_if! {
-    if #[cfg(any(target_os = "android", target_os = "linux"))] {
+    if #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))] {
         sockopt_impl!(
             /// The maximum segment size for outgoing TCP packets.
             TcpMaxSeg, Both, libc::IPPROTO_TCP, libc::TCP_MAXSEG, u32);
@@ -412,7 +412,7 @@ sockopt_impl!(
     TcpKeepCount, Both, libc::IPPROTO_TCP, libc::TCP_KEEPCNT, u32);
 #[cfg(any(target_os = "android",
           target_os = "fuchsia",
-          target_os = "linux"))]
+          any(target_os = "linux", target_os = "runixos")))]
 sockopt_impl!(
     #[allow(missing_docs)]
     // Not documented by Linux!
@@ -423,7 +423,7 @@ sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
     /// The time (in seconds) between individual keepalive probes.
     TcpKeepInterval, Both, libc::IPPROTO_TCP, libc::TCP_KEEPINTVL, u32);
-#[cfg(any(target_os = "fuchsia", target_os = "linux"))]
+#[cfg(any(target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
 #[cfg(feature = "net")]
 sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
@@ -437,13 +437,13 @@ sockopt_impl!(
 sockopt_impl!(
     /// Sets or gets the maximum socket send buffer in bytes.
     SndBuf, Both, libc::SOL_SOCKET, libc::SO_SNDBUF, usize);
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 sockopt_impl!(
     /// Using this socket option, a privileged (`CAP_NET_ADMIN`) process can
     /// perform the same task as `SO_RCVBUF`, but the `rmem_max limit` can be
     /// overridden.
     RcvBufForce, SetOnly, libc::SOL_SOCKET, libc::SO_RCVBUFFORCE, usize);
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 sockopt_impl!(
     /// Using this socket option, a privileged (`CAP_NET_ADMIN`)  process can
     /// perform the same task as `SO_SNDBUF`, but the `wmem_max` limit can be
@@ -456,23 +456,23 @@ sockopt_impl!(
     /// Returns a value indicating whether or not this socket has been marked to
     /// accept connections with `listen(2)`.
     AcceptConn, GetOnly, libc::SOL_SOCKET, libc::SO_ACCEPTCONN, bool);
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 sockopt_impl!(
     /// Bind this socket to a particular device like “eth0”.
     BindToDevice, Both, libc::SOL_SOCKET, libc::SO_BINDTODEVICE, OsString<[u8; libc::IFNAMSIZ]>);
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 #[cfg(feature = "net")]
 sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
     #[allow(missing_docs)]
     // Not documented by Linux!
     OriginalDst, GetOnly, libc::SOL_IP, libc::SO_ORIGINAL_DST, libc::sockaddr_in);
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 sockopt_impl!(
     #[allow(missing_docs)]
     // Not documented by Linux!
     Ip6tOriginalDst, GetOnly, libc::SOL_IPV6, libc::IP6T_SO_ORIGINAL_DST, libc::sockaddr_in6);
-#[cfg(any(target_os = "linux"))]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 sockopt_impl!(
     /// Specifies exact type of timestamping information collected by the kernel
     /// [Further reading](https://www.kernel.org/doc/html/latest/networking/timestamping.html)
@@ -480,11 +480,11 @@ sockopt_impl!(
 sockopt_impl!(
     /// Enable or disable the receiving of the `SO_TIMESTAMP` control message.
     ReceiveTimestamp, Both, libc::SOL_SOCKET, libc::SO_TIMESTAMP, bool);
-#[cfg(all(target_os = "linux"))]
+#[cfg(all(any(target_os = "linux", target_os = "runixos")))]
 sockopt_impl!(
     /// Enable or disable the receiving of the `SO_TIMESTAMPNS` control message.
     ReceiveTimestampns, Both, libc::SOL_SOCKET, libc::SO_TIMESTAMPNS, bool);
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 #[cfg(feature = "net")]
 sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
@@ -504,17 +504,17 @@ sockopt_impl!(
     /// Can `bind(2)` to any address, even one not bound to any available
     /// network interface in the system.
     BindAny, Both, libc::IPPROTO_IP, libc::IP_BINDANY, bool);
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 sockopt_impl!(
     /// Set the mark for each packet sent through this socket (similar to the
     /// netfilter MARK target but socket-based).
     Mark, Both, libc::SOL_SOCKET, libc::SO_MARK, u32);
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 sockopt_impl!(
     /// Enable or disable the receiving of the `SCM_CREDENTIALS` control
     /// message.
     PassCred, Both, libc::SOL_SOCKET, libc::SO_PASSCRED, bool);
-#[cfg(any(target_os = "freebsd", target_os = "linux"))]
+#[cfg(any(target_os = "freebsd", any(target_os = "linux", target_os = "runixos")))]
 #[cfg(feature = "net")]
 sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
@@ -524,7 +524,7 @@ sockopt_impl!(
 #[cfg(any(
     target_os = "android",
     target_os = "ios",
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "macos",
     target_os = "netbsd",
 ))]
@@ -538,7 +538,7 @@ sockopt_impl!(
     target_os = "android",
     target_os = "freebsd",
     target_os = "ios",
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "macos",
     target_os = "netbsd",
     target_os = "openbsd",
@@ -575,26 +575,26 @@ sockopt_impl!(
     /// The `recvmsg(2)` call will return the destination IP address for a UDP
     /// datagram.
     Ipv4RecvDstAddr, Both, libc::IPPROTO_IP, libc::IP_RECVDSTADDR, bool);
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 #[cfg(feature = "net")]
 sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
     #[allow(missing_docs)]
     // Not documented by Linux!
     UdpGsoSegment, Both, libc::SOL_UDP, libc::UDP_SEGMENT, libc::c_int);
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 #[cfg(feature = "net")]
 sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
     #[allow(missing_docs)]
     // Not documented by Linux!
     UdpGroSegment, Both, libc::IPPROTO_UDP, libc::UDP_GRO, bool);
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 sockopt_impl!(
     /// Configures the behavior of time-based transmission of packets, for use
     /// with the `TxTime` control message.
     TxTime, Both, libc::SOL_SOCKET, libc::SO_TXTIME, libc::sock_txtime);
-#[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+#[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
 sockopt_impl!(
     /// Indicates that an unsigned 32-bit value ancillary message (cmsg) should
     /// be attached to received skbs indicating the number of packets dropped by
@@ -605,20 +605,20 @@ sockopt_impl!(
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
     /// The socket is restricted to sending and receiving IPv6 packets only.
     Ipv6V6Only, Both, libc::IPPROTO_IPV6, libc::IPV6_V6ONLY, bool);
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 sockopt_impl!(
     /// Enable extended reliable error message passing.
     Ipv4RecvErr, Both, libc::IPPROTO_IP, libc::IP_RECVERR, bool);
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 sockopt_impl!(
     /// Control receiving of asynchronous error options.
     Ipv6RecvErr, Both, libc::IPPROTO_IPV6, libc::IPV6_RECVERR, bool);
-#[cfg(any(target_os = "android", target_os = "freebsd", target_os = "linux"))]
+#[cfg(any(target_os = "android", target_os = "freebsd", any(target_os = "linux", target_os = "runixos")))]
 sockopt_impl!(
     /// Set or retrieve the current time-to-live field that is used in every
     /// packet sent from this socket.
     Ipv4Ttl, Both, libc::IPPROTO_IP, libc::IP_TTL, libc::c_int);
-#[cfg(any(target_os = "android", target_os = "freebsd", target_os = "linux"))]
+#[cfg(any(target_os = "android", target_os = "freebsd", any(target_os = "linux", target_os = "runixos")))]
 sockopt_impl!(
     /// Set the unicast hop limit for the socket.
     Ipv6Ttl, Both, libc::IPPROTO_IPV6, libc::IPV6_UNICAST_HOPS, libc::c_int);
@@ -629,7 +629,7 @@ sockopt_impl!(
 #[cfg(any(
     target_os = "android",
     target_os = "ios",
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "macos",
 ))]
 sockopt_impl!(
@@ -638,13 +638,13 @@ sockopt_impl!(
 
 #[allow(missing_docs)]
 // Not documented by Linux!
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 #[derive(Copy, Clone, Debug)]
 pub struct AlgSetAeadAuthSize;
 
 // ALG_SET_AEAD_AUTH_SIZE read the length from passed `option_len`
 // See https://elixir.bootlin.com/linux/v4.4/source/crypto/af_alg.c#L222
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 impl SetSockOpt for AlgSetAeadAuthSize {
     type Val = usize;
 
@@ -662,18 +662,18 @@ impl SetSockOpt for AlgSetAeadAuthSize {
 
 #[allow(missing_docs)]
 // Not documented by Linux!
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 #[derive(Clone, Debug)]
 pub struct AlgSetKey<T>(::std::marker::PhantomData<T>);
 
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 impl<T> Default for AlgSetKey<T> {
     fn default() -> Self {
         AlgSetKey(Default::default())
     }
 }
 
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 impl<T> SetSockOpt for AlgSetKey<T> where T: AsRef<[u8]> + Clone {
     type Val = T;
 
@@ -960,7 +960,7 @@ impl<'a> Set<'a, OsString> for SetOsString<'a> {
 
 #[cfg(test)]
 mod test {
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[test]
     fn can_get_peercred_on_unix_socket() {
         use super::super::*;
@@ -996,7 +996,7 @@ mod test {
     }
 
     #[cfg(any(target_os = "freebsd",
-              target_os = "linux",
+              any(target_os = "linux", target_os = "runixos"),
               target_os = "nacl"))]
     #[test]
     fn can_get_listen_on_tcp_socket() {

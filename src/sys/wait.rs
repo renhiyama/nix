@@ -8,7 +8,7 @@ use libc::{self, c_int};
 use std::convert::TryFrom;
 #[cfg(any(
     target_os = "android",
-    all(target_os = "linux", not(target_env = "uclibc")),
+    all(any(target_os = "linux", target_os = "runixos"), not(target_env = "uclibc")),
 ))]
 use std::os::unix::io::RawFd;
 
@@ -28,7 +28,7 @@ libc_bitflags!(
                   target_os = "freebsd",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "redox",
                   target_os = "macos",
                   target_os = "netbsd"))]
@@ -43,7 +43,7 @@ libc_bitflags!(
                   target_os = "freebsd",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "redox",
                   target_os = "macos",
                   target_os = "netbsd"))]
@@ -54,22 +54,22 @@ libc_bitflags!(
                   target_os = "freebsd",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "redox",
                   target_os = "macos",
                   target_os = "netbsd"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         WNOWAIT;
         /// Don't wait on children of other threads in this group
-        #[cfg(any(target_os = "android", target_os = "linux", target_os = "redox"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos"), target_os = "redox"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         __WNOTHREAD;
         /// Wait on all children, regardless of type
-        #[cfg(any(target_os = "android", target_os = "linux", target_os = "redox"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos"), target_os = "redox"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         __WALL;
         /// Wait for "clone" children only.
-        #[cfg(any(target_os = "android", target_os = "linux", target_os = "redox"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos"), target_os = "redox"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         __WCLONE;
     }
@@ -107,7 +107,7 @@ pub enum WaitStatus {
     ///
     /// [`nix::sys::ptrace`]: ../ptrace/index.html
     /// [`ptrace`(2)]: https://man7.org/linux/man-pages/man2/ptrace.2.html
-    #[cfg(any(target_os = "linux", target_os = "android"))]
+    #[cfg(any(target_os = "linux", target_os = "runixos", target_os = "android"))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     PtraceEvent(Pid, Signal, c_int),
     /// The traced process was stopped by execution of a system call,
@@ -115,7 +115,7 @@ pub enum WaitStatus {
     /// more information.
     ///
     /// [`ptrace`(2)]: https://man7.org/linux/man-pages/man2/ptrace.2.html
-    #[cfg(any(target_os = "linux", target_os = "android"))]
+    #[cfg(any(target_os = "linux", target_os = "runixos", target_os = "android"))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     PtraceSyscall(Pid),
     /// The process was previously stopped but has resumed execution
@@ -137,7 +137,7 @@ impl WaitStatus {
         match *self {
             Exited(p, _) | Signaled(p, _, _) | Stopped(p, _) | Continued(p) => Some(p),
             StillAlive => None,
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             PtraceEvent(p, _, _) | PtraceSyscall(p) => Some(p),
         }
     }
@@ -171,7 +171,7 @@ fn stop_signal(status: i32) -> Result<Signal> {
     Signal::try_from(libc::WSTOPSIG(status))
 }
 
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 fn syscall_stop(status: i32) -> bool {
     // From ptrace(2), setting PTRACE_O_TRACESYSGOOD has the effect
     // of delivering SIGTRAP | 0x80 as the signal number for syscall
@@ -180,7 +180,7 @@ fn syscall_stop(status: i32) -> bool {
     libc::WSTOPSIG(status) == libc::SIGTRAP | 0x80
 }
 
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 fn stop_additional(status: i32) -> c_int {
     (status >> 16) as c_int
 }
@@ -214,7 +214,7 @@ impl WaitStatus {
             WaitStatus::Signaled(pid, term_signal(status)?, dumped_core(status))
         } else if stopped(status) {
             cfg_if! {
-                if #[cfg(any(target_os = "android", target_os = "linux"))] {
+                if #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))] {
                     fn decode_stopped(pid: Pid, status: i32) -> Result<WaitStatus> {
                         let status_additional = stop_additional(status);
                         Ok(if syscall_stop(status) {
@@ -254,7 +254,7 @@ impl WaitStatus {
         target_os = "android",
         target_os = "freebsd",
         target_os = "haiku",
-        all(target_os = "linux", not(target_env = "uclibc")),
+        all(any(target_os = "linux", target_os = "runixos"), not(target_env = "uclibc")),
     ))]
     unsafe fn from_siginfo(siginfo: &libc::siginfo_t) -> Result<WaitStatus> {
         let si_pid = siginfo.si_pid();
@@ -276,7 +276,7 @@ impl WaitStatus {
             ),
             libc::CLD_STOPPED => WaitStatus::Stopped(pid, Signal::try_from(si_status)?),
             libc::CLD_CONTINUED => WaitStatus::Continued(pid),
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             libc::CLD_TRAPPED => {
                 if si_status == libc::SIGTRAP | 0x80 {
                     WaitStatus::PtraceSyscall(pid)
@@ -334,7 +334,7 @@ pub fn wait() -> Result<WaitStatus> {
     target_os = "android",
     target_os = "freebsd",
     target_os = "haiku",
-    all(target_os = "linux", not(target_env = "uclibc")),
+    all(any(target_os = "linux", target_os = "runixos"), not(target_env = "uclibc")),
 ))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Id {
@@ -347,7 +347,7 @@ pub enum Id {
     /// If the PID is zero, the caller's process group is used since Linux 5.4.
     PGid(Pid),
     /// Wait for the child referred to by the given PID file descriptor
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     PIDFd(RawFd),
 }
 
@@ -358,14 +358,14 @@ pub enum Id {
     target_os = "android",
     target_os = "freebsd",
     target_os = "haiku",
-    all(target_os = "linux", not(target_env = "uclibc")),
+    all(any(target_os = "linux", target_os = "runixos"), not(target_env = "uclibc")),
 ))]
 pub fn waitid(id: Id, flags: WaitPidFlag) -> Result<WaitStatus> {
     let (idtype, idval) = match id {
         Id::All => (libc::P_ALL, 0),
         Id::Pid(pid) => (libc::P_PID, pid.as_raw() as libc::id_t),
         Id::PGid(pid) => (libc::P_PGID, pid.as_raw() as libc::id_t),
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         Id::PIDFd(fd) => (libc::P_PIDFD, fd as libc::id_t),
     };
 

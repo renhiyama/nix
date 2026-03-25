@@ -26,21 +26,21 @@ use crate::sys::stat::Mode;
 
 feature! {
     #![feature = "fs"]
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     pub use self::pivot_root::*;
 }
 
 #[cfg(any(target_os = "android",
           target_os = "dragonfly",
           target_os = "freebsd",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "openbsd"))]
 pub use self::setres::*;
 
 #[cfg(any(target_os = "android",
           target_os = "dragonfly",
           target_os = "freebsd",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "openbsd"))]
 pub use self::getres::*;
 
@@ -369,7 +369,7 @@ pub fn getpgrp() -> Pid {
 ///
 /// No error handling is required as a thread id should always exist for any
 /// process, even if threads are not being used.
-#[cfg(any(target_os = "linux", target_os = "android"))]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "android"))]
 #[inline]
 pub fn gettid() -> Pid {
     Pid(unsafe { libc::syscall(libc::SYS_gettid) as pid_t })
@@ -832,7 +832,7 @@ pub fn execvp<S: AsRef<CStr>>(filename: &CStr, args: &[S]) -> Result<Infallible>
 /// environment and have a search path. See these two for additional
 /// information.
 #[cfg(any(target_os = "haiku",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "openbsd"))]
 pub fn execvpe<SA: AsRef<CStr>, SE: AsRef<CStr>>(filename: &CStr, args: &[SA], env: &[SE]) -> Result<Infallible> {
     let args_p = to_exec_array(args);
@@ -856,7 +856,7 @@ pub fn execvpe<SA: AsRef<CStr>, SE: AsRef<CStr>>(filename: &CStr, args: &[SA], e
 /// This function is similar to `execve`, except that the program to be executed
 /// is referenced as a file descriptor instead of a path.
 #[cfg(any(target_os = "android",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "dragonfly",
           target_os = "freebsd"))]
 #[inline]
@@ -881,7 +881,7 @@ pub fn fexecve<SA: AsRef<CStr> ,SE: AsRef<CStr>>(fd: RawFd, args: &[SA], env: &[
 ///
 /// This function is similar to `execve`, except that the program to be executed
 /// is referenced as a file descriptor to the base directory plus a path.
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 #[inline]
 pub fn execveat<SA: AsRef<CStr>,SE: AsRef<CStr>>(dirfd: RawFd, pathname: &CStr, args: &[SA],
                 env: &[SE], flags: super::fcntl::AtFlags) -> Result<Infallible> {
@@ -925,7 +925,7 @@ pub fn execveat<SA: AsRef<CStr>,SE: AsRef<CStr>>(dirfd: RawFd, pathname: &CStr, 
           target_os = "dragonfly",
           target_os = "freebsd",
           target_os = "illumos",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "netbsd",
           target_os = "openbsd",
           target_os = "solaris"))]
@@ -1069,7 +1069,7 @@ pub enum Whence {
     #[cfg(any(target_os = "dragonfly",
               target_os = "freebsd",
               target_os = "illumos",
-              target_os = "linux",
+              any(target_os = "linux", target_os = "runixos"),
               target_os = "solaris"))]
     SeekData = libc::SEEK_DATA,
     /// Specify an offset relative to the next hole in the file greater than
@@ -1080,7 +1080,7 @@ pub enum Whence {
     #[cfg(any(target_os = "dragonfly",
               target_os = "freebsd",
               target_os = "illumos",
-              target_os = "linux",
+              any(target_os = "linux", target_os = "runixos"),
               target_os = "solaris"))]
     SeekHole = libc::SEEK_HOLE
 }
@@ -1094,7 +1094,7 @@ pub fn lseek(fd: RawFd, offset: off_t, whence: Whence) -> Result<off_t> {
     Errno::result(res).map(|r| r as off_t)
 }
 
-#[cfg(any(target_os = "linux", target_os = "android"))]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "android"))]
 pub fn lseek64(fd: RawFd, offset: libc::off64_t, whence: Whence) -> Result<libc::off64_t> {
     let res = unsafe { libc::lseek64(fd, offset, whence as i32) };
 
@@ -1125,7 +1125,7 @@ feature! {
 /// created:
 ///
 /// - `O_CLOEXEC`:    Set the close-on-exec flag for the new file descriptors.
-#[cfg_attr(target_os = "linux", doc = "- `O_DIRECT`: Create a pipe that performs I/O in \"packet\" mode.")]
+#[cfg_attr(any(target_os = "linux", target_os = "runixos"), doc = "- `O_DIRECT`: Create a pipe that performs I/O in \"packet\" mode.")]
 #[cfg_attr(target_os = "netbsd", doc = "- `O_NOSIGPIPE`: Return `EPIPE` instead of raising `SIGPIPE`.")]
 /// - `O_NONBLOCK`:   Set the non-blocking flag for the ends of the pipe.
 ///
@@ -1135,7 +1135,7 @@ feature! {
           target_os = "emscripten",
           target_os = "freebsd",
           target_os = "illumos",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "redox",
           target_os = "netbsd",
           target_os = "openbsd",
@@ -1308,7 +1308,7 @@ pub fn chroot<P: ?Sized + NixPath>(path: &P) -> Result<()> {
 #[cfg(any(
     target_os = "dragonfly",
     target_os = "freebsd",
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "netbsd",
     target_os = "openbsd"
 ))]
@@ -1330,7 +1330,7 @@ pub fn fsync(fd: RawFd) -> Result<()> {
 ///
 /// See also
 /// [fdatasync(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fdatasync.html)
-#[cfg(any(target_os = "linux",
+#[cfg(any(target_os = "linux", target_os = "runixos",
           target_os = "android",
           target_os = "emscripten",
           target_os = "freebsd",
@@ -1438,7 +1438,7 @@ feature! {
 /// ID of the caller.
 ///
 /// See also [setfsuid(2)](https://man7.org/linux/man-pages/man2/setfsuid.2.html)
-#[cfg(any(target_os = "linux", target_os = "android"))]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "android"))]
 pub fn setfsuid(uid: Uid) -> Uid {
     let prev_fsuid = unsafe { libc::setfsuid(uid.into()) };
     Uid::from_raw(prev_fsuid as uid_t)
@@ -1449,7 +1449,7 @@ pub fn setfsuid(uid: Uid) -> Uid {
 /// ID of the caller.
 ///
 /// See also [setfsgid(2)](https://man7.org/linux/man-pages/man2/setfsgid.2.html)
-#[cfg(any(target_os = "linux", target_os = "android"))]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "android"))]
 pub fn setfsgid(gid: Gid) -> Gid {
     let prev_fsgid = unsafe { libc::setfsgid(gid.into()) };
     Gid::from_raw(prev_fsgid as gid_t)
@@ -1890,7 +1890,7 @@ feature! {
 #[repr(i32)]
 #[non_exhaustive]
 pub enum PathconfVar {
-    #[cfg(any(target_os = "dragonfly", target_os = "freebsd", target_os = "linux",
+    #[cfg(any(target_os = "dragonfly", target_os = "freebsd", any(target_os = "linux", target_os = "runixos"),
               target_os = "netbsd", target_os = "openbsd", target_os = "redox"))]
     /// Minimum number of bits needed to represent, as a signed integer value,
     /// the maximum size of a regular file allowed in the specified directory.
@@ -1916,40 +1916,40 @@ pub enum PathconfVar {
     /// a pipe.
     PIPE_BUF = libc::_PC_PIPE_BUF,
     #[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "illumos",
-              target_os = "linux", target_os = "netbsd", target_os = "openbsd",
+              any(target_os = "linux", target_os = "runixos"), target_os = "netbsd", target_os = "openbsd",
               target_os = "redox", target_os = "solaris"))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     /// Symbolic links can be created.
     POSIX2_SYMLINKS = libc::_PC_2_SYMLINKS,
     #[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "freebsd",
-              target_os = "linux", target_os = "openbsd", target_os = "redox"))]
+              any(target_os = "linux", target_os = "runixos"), target_os = "openbsd", target_os = "redox"))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     /// Minimum number of bytes of storage actually allocated for any portion of
     /// a file.
     POSIX_ALLOC_SIZE_MIN = libc::_PC_ALLOC_SIZE_MIN,
     #[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "freebsd",
-              target_os = "linux", target_os = "openbsd"))]
+              any(target_os = "linux", target_os = "runixos"), target_os = "openbsd"))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     /// Recommended increment for file transfer sizes between the
     /// `POSIX_REC_MIN_XFER_SIZE` and `POSIX_REC_MAX_XFER_SIZE` values.
     POSIX_REC_INCR_XFER_SIZE = libc::_PC_REC_INCR_XFER_SIZE,
     #[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "freebsd",
-              target_os = "linux", target_os = "openbsd", target_os = "redox"))]
+              any(target_os = "linux", target_os = "runixos"), target_os = "openbsd", target_os = "redox"))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     /// Maximum recommended file transfer size.
     POSIX_REC_MAX_XFER_SIZE = libc::_PC_REC_MAX_XFER_SIZE,
     #[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "freebsd",
-              target_os = "linux", target_os = "openbsd", target_os = "redox"))]
+              any(target_os = "linux", target_os = "runixos"), target_os = "openbsd", target_os = "redox"))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     /// Minimum recommended file transfer size.
     POSIX_REC_MIN_XFER_SIZE = libc::_PC_REC_MIN_XFER_SIZE,
     #[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "freebsd",
-              target_os = "linux", target_os = "openbsd", target_os = "redox"))]
+              any(target_os = "linux", target_os = "runixos"), target_os = "openbsd", target_os = "redox"))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     ///  Recommended file transfer buffer alignment.
     POSIX_REC_XFER_ALIGN = libc::_PC_REC_XFER_ALIGN,
     #[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "freebsd",
-              target_os = "illumos", target_os = "linux", target_os = "netbsd",
+              target_os = "illumos", any(target_os = "linux", target_os = "runixos"), target_os = "netbsd",
               target_os = "openbsd", target_os = "redox", target_os = "solaris"))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     /// Maximum number of bytes in a symbolic link.
@@ -1965,21 +1965,21 @@ pub enum PathconfVar {
     /// disable terminal special character handling.
     _POSIX_VDISABLE = libc::_PC_VDISABLE,
     #[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "freebsd",
-              target_os = "illumos", target_os = "linux", target_os = "openbsd",
+              target_os = "illumos", any(target_os = "linux", target_os = "runixos"), target_os = "openbsd",
               target_os = "redox", target_os = "solaris"))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     /// Asynchronous input or output operations may be performed for the
     /// associated file.
     _POSIX_ASYNC_IO = libc::_PC_ASYNC_IO,
     #[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "freebsd",
-              target_os = "illumos", target_os = "linux", target_os = "openbsd",
+              target_os = "illumos", any(target_os = "linux", target_os = "runixos"), target_os = "openbsd",
               target_os = "redox", target_os = "solaris"))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     /// Prioritized input or output operations may be performed for the
     /// associated file.
     _POSIX_PRIO_IO = libc::_PC_PRIO_IO,
     #[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "freebsd",
-              target_os = "illumos", target_os = "linux", target_os = "netbsd",
+              target_os = "illumos", any(target_os = "linux", target_os = "runixos"), target_os = "netbsd",
               target_os = "openbsd", target_os = "redox", target_os = "solaris"))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     /// Synchronized input or output operations may be performed for the
@@ -2678,7 +2678,7 @@ pub fn sysconf(var: SysconfVar) -> Result<Option<c_long>> {
 feature! {
 #![feature = "fs"]
 
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 mod pivot_root {
     use crate::{Result, NixPath};
     use crate::errno::Errno;
@@ -2701,7 +2701,7 @@ mod pivot_root {
 #[cfg(any(target_os = "android",
           target_os = "dragonfly",
           target_os = "freebsd",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "openbsd"))]
 mod setres {
     feature! {
@@ -2748,7 +2748,7 @@ mod setres {
 #[cfg(any(target_os = "android",
           target_os = "dragonfly",
           target_os = "freebsd",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "openbsd"))]
 mod getres {
     feature! {
@@ -2876,7 +2876,7 @@ pub struct User {
     #[cfg(not(any(target_os = "android",
                   target_os = "fuchsia",
                   target_os = "illumos",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "solaris")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     pub class: CString,
@@ -2884,7 +2884,7 @@ pub struct User {
     #[cfg(not(any(target_os = "android",
                   target_os = "fuchsia",
                   target_os = "illumos",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "solaris")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     pub change: libc::time_t,
@@ -2892,7 +2892,7 @@ pub struct User {
     #[cfg(not(any(target_os = "android",
                   target_os = "fuchsia",
                   target_os = "illumos",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "solaris")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     pub expire: libc::time_t
@@ -2914,19 +2914,19 @@ impl From<&libc::passwd> for User {
                 #[cfg(not(any(target_os = "android",
                               target_os = "fuchsia",
                               target_os = "illumos",
-                              target_os = "linux",
+                              any(target_os = "linux", target_os = "runixos"),
                               target_os = "solaris")))]
                 class: CString::new(CStr::from_ptr(pw.pw_class).to_bytes()).unwrap(),
                 #[cfg(not(any(target_os = "android",
                               target_os = "fuchsia",
                               target_os = "illumos",
-                              target_os = "linux",
+                              any(target_os = "linux", target_os = "runixos"),
                               target_os = "solaris")))]
                 change: pw.pw_change,
                 #[cfg(not(any(target_os = "android",
                               target_os = "fuchsia",
                               target_os = "illumos",
-                              target_os = "linux",
+                              any(target_os = "linux", target_os = "runixos"),
                               target_os = "solaris")))]
                 expire: pw.pw_expire
             }
@@ -2961,19 +2961,19 @@ impl From<User> for libc::passwd {
             #[cfg(not(any(target_os = "android",
                           target_os = "fuchsia",
                           target_os = "illumos",
-                          target_os = "linux",
+                          any(target_os = "linux", target_os = "runixos"),
                           target_os = "solaris")))]
             pw_class: u.class.into_raw(),
             #[cfg(not(any(target_os = "android",
                           target_os = "fuchsia",
                           target_os = "illumos",
-                          target_os = "linux",
+                          any(target_os = "linux", target_os = "runixos"),
                           target_os = "solaris")))]
             pw_change: u.change,
             #[cfg(not(any(target_os = "android",
                           target_os = "fuchsia",
                           target_os = "illumos",
-                          target_os = "linux",
+                          any(target_os = "linux", target_os = "runixos"),
                           target_os = "solaris")))]
             pw_expire: u.expire,
             #[cfg(target_os = "illumos")]
@@ -3155,8 +3155,8 @@ impl Group {
     /// # Examples
     ///
     // Disable this test on all OS except Linux as root group may not exist.
-    #[cfg_attr(not(target_os = "linux"), doc = " ```no_run")]
-    #[cfg_attr(target_os = "linux", doc = " ```")]
+    #[cfg_attr(not(any(target_os = "linux", target_os = "runixos")), doc = " ```no_run")]
+    #[cfg_attr(any(target_os = "linux", target_os = "runixos"), doc = " ```")]
     /// use nix::unistd::{Gid, Group};
     /// // Returns an Result<Option<Group>>, thus the double unwrap.
     /// let res = Group::from_gid(Gid::from_raw(0)).unwrap().unwrap();
@@ -3176,8 +3176,8 @@ impl Group {
     /// # Examples
     ///
     // Disable this test on all OS except Linux as root group may not exist.
-    #[cfg_attr(not(target_os = "linux"), doc = " ```no_run")]
-    #[cfg_attr(target_os = "linux", doc = " ```")]
+    #[cfg_attr(not(any(target_os = "linux", target_os = "runixos")), doc = " ```no_run")]
+    #[cfg_attr(any(target_os = "linux", target_os = "runixos"), doc = " ```")]
     /// use nix::unistd::Group;
     /// // Returns an Result<Option<Group>>, thus the double unwrap.
     /// let res = Group::from_name("root").unwrap().unwrap();

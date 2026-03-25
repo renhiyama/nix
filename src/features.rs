@@ -1,7 +1,7 @@
 //! Feature tests for OS functionality
 pub use self::os::*;
 
-#[cfg(any(target_os = "linux", target_os = "android"))]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "android"))]
 mod os {
     use std::os::unix::ffi::OsStrExt;
     use crate::sys::utsname::uname;

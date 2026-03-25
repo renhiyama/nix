@@ -57,7 +57,7 @@ fn cast_and_trim(slice: &[c_char]) -> &OsStr {
 
 #[cfg(test)]
 mod test {
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "runixos"))]
     #[test]
     pub fn test_uname_linux() {
         assert_eq!(super::uname().unwrap().sysname(), "Linux");

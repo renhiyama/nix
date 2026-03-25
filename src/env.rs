@@ -44,7 +44,7 @@ pub unsafe fn clearenv() -> std::result::Result<(), ClearEnvError> {
                      target_os = "wasi",
                      target_env = "wasi",
                      target_env = "uclibc",
-                     target_os = "linux",
+                     any(target_os = "linux", target_os = "runixos"),
                      target_os = "android",
                      target_os = "emscripten"))] {
             let ret = libc::clearenv();

@@ -40,7 +40,7 @@ libc_bitflags!(
         #[cfg(any(target_os = "android",
                   target_os = "fuchsia",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos",
                   target_os = "netbsd",
                   target_os = "illumos",
@@ -59,7 +59,7 @@ libc_bitflags!(
                   target_os = "fuchsia",
                   target_os = "illumos",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos",
                   target_os = "netbsd",
                   target_os = "openbsd",
@@ -77,7 +77,7 @@ libc_bitflags!(
         IFF_ALLMULTI;
         /// Master of a load balancing bundle. (see
         /// [`netdevice(7)`](https://man7.org/linux/man-pages/man7/netdevice.7.html))
-        #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_MASTER;
         /// transmission in progress, tx hardware queue is full
@@ -94,7 +94,7 @@ libc_bitflags!(
         IFF_INTELLIGENT;
         /// Slave of a load balancing bundle. (see
         /// [`netdevice(7)`](https://man7.org/linux/man-pages/man7/netdevice.7.html))
-        #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_SLAVE;
         /// Can't hear own transmissions.
@@ -124,7 +124,7 @@ libc_bitflags!(
         IFF_MULTI_BCAST;
         /// Is able to select media type via ifmap. (see
         /// [`netdevice(7)`](https://man7.org/linux/man-pages/man7/netdevice.7.html))
-        #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_PORTSEL;
         /// Per link layer defined bit.
@@ -142,7 +142,7 @@ libc_bitflags!(
         IFF_UNNUMBERED;
         /// Auto media selection active. (see
         /// [`netdevice(7)`](https://man7.org/linux/man-pages/man7/netdevice.7.html))
-        #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_AUTOMEDIA;
         /// Per link layer defined bit.
@@ -167,7 +167,7 @@ libc_bitflags!(
         IFF_DHCPRUNNING;
         /// The addresses are lost when the interface goes down. (see
         /// [`netdevice(7)`](https://man7.org/linux/man-pages/man7/netdevice.7.html))
-        #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_DYNAMIC;
         /// Do not advertise.
@@ -175,7 +175,7 @@ libc_bitflags!(
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_PRIVATE;
         /// Driver signals L1 up. Volatile.
-        #[cfg(any(target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_LOWER_UP;
         /// Interface is in polling mode.
@@ -191,7 +191,7 @@ libc_bitflags!(
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_NOXMIT;
         /// Driver signals dormant. Volatile.
-        #[cfg(any(target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_DORMANT;
         /// User-requested promisc mode.
@@ -203,7 +203,7 @@ libc_bitflags!(
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_NOLOCAL;
         /// Echo sent packets. Volatile.
-        #[cfg(any(target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_ECHO;
         /// User-requested monitor mode.
@@ -255,15 +255,15 @@ libc_bitflags!(
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_NORTEXCH;
         /// Do not provide packet information
-        #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_NO_PI as libc::c_int;
         /// TUN device (no Ethernet headers)
-        #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_TUN as libc::c_int;
         /// TAP device
-        #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IFF_TAP as libc::c_int;
         /// IPv4 interface.
@@ -329,7 +329,7 @@ libc_bitflags!(
     target_os = "freebsd",
     target_os = "fuchsia",
     target_os = "ios",
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "macos",
     target_os = "netbsd",
     target_os = "openbsd",
@@ -460,7 +460,7 @@ mod if_nameindex {
     target_os = "freebsd",
     target_os = "fuchsia",
     target_os = "ios",
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "macos",
     target_os = "netbsd",
     target_os = "openbsd",

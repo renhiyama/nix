@@ -60,7 +60,7 @@ libc_enum!{
         SIGTERM,
         /// Stack fault (obsolete)
         #[cfg(all(any(target_os = "android", target_os = "emscripten",
-                      target_os = "fuchsia", target_os = "linux"),
+                      target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")),
                   not(any(target_arch = "mips", target_arch = "mips64",
                           target_arch = "sparc64"))))]
         SIGSTKFLT,
@@ -91,20 +91,20 @@ libc_enum!{
         /// Input/output possible signal
         SIGIO,
         #[cfg(any(target_os = "android", target_os = "emscripten",
-                  target_os = "fuchsia", target_os = "linux"))]
+                  target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         /// Power failure imminent.
         SIGPWR,
         /// Bad system call
         SIGSYS,
         #[cfg(not(any(target_os = "android", target_os = "emscripten",
-                      target_os = "fuchsia", target_os = "linux",
+                      target_os = "fuchsia", any(target_os = "linux", target_os = "runixos"),
                       target_os = "redox")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         /// Emulator trap
         SIGEMT,
         #[cfg(not(any(target_os = "android", target_os = "emscripten",
-                      target_os = "fuchsia", target_os = "linux",
+                      target_os = "fuchsia", any(target_os = "linux", target_os = "runixos"),
                       target_os = "redox")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         /// Information request
@@ -134,7 +134,7 @@ impl FromStr for Signal {
             "SIGALRM" => Signal::SIGALRM,
             "SIGTERM" => Signal::SIGTERM,
             #[cfg(all(any(target_os = "android", target_os = "emscripten",
-                          target_os = "fuchsia", target_os = "linux"),
+                          target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")),
                       not(any(target_arch = "mips", target_arch = "mips64",
                               target_arch = "sparc64"))))]
             "SIGSTKFLT" => Signal::SIGSTKFLT,
@@ -152,15 +152,15 @@ impl FromStr for Signal {
             "SIGWINCH" => Signal::SIGWINCH,
             "SIGIO" => Signal::SIGIO,
             #[cfg(any(target_os = "android", target_os = "emscripten",
-                      target_os = "fuchsia", target_os = "linux"))]
+                      target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
             "SIGPWR" => Signal::SIGPWR,
             "SIGSYS" => Signal::SIGSYS,
             #[cfg(not(any(target_os = "android", target_os = "emscripten",
-                          target_os = "fuchsia", target_os = "linux",
+                          target_os = "fuchsia", any(target_os = "linux", target_os = "runixos"),
                           target_os = "redox")))]
             "SIGEMT" => Signal::SIGEMT,
             #[cfg(not(any(target_os = "android", target_os = "emscripten",
-                          target_os = "fuchsia", target_os = "linux",
+                          target_os = "fuchsia", any(target_os = "linux", target_os = "runixos"),
                           target_os = "redox")))]
             "SIGINFO" => Signal::SIGINFO,
             _ => return Err(Errno::EINVAL),
@@ -193,7 +193,7 @@ impl Signal {
             Signal::SIGALRM => "SIGALRM",
             Signal::SIGTERM => "SIGTERM",
             #[cfg(all(any(target_os = "android", target_os = "emscripten",
-                          target_os = "fuchsia", target_os = "linux"),
+                          target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")),
                       not(any(target_arch = "mips", target_arch = "mips64", target_arch = "sparc64"))))]
             Signal::SIGSTKFLT => "SIGSTKFLT",
             Signal::SIGCHLD => "SIGCHLD",
@@ -210,15 +210,15 @@ impl Signal {
             Signal::SIGWINCH => "SIGWINCH",
             Signal::SIGIO => "SIGIO",
             #[cfg(any(target_os = "android", target_os = "emscripten",
-                      target_os = "fuchsia", target_os = "linux"))]
+                      target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
             Signal::SIGPWR => "SIGPWR",
             Signal::SIGSYS => "SIGSYS",
             #[cfg(not(any(target_os = "android", target_os = "emscripten",
-                          target_os = "fuchsia", target_os = "linux",
+                          target_os = "fuchsia", any(target_os = "linux", target_os = "runixos"),
                           target_os = "redox")))]
             Signal::SIGEMT => "SIGEMT",
             #[cfg(not(any(target_os = "android", target_os = "emscripten",
-                          target_os = "fuchsia", target_os = "linux",
+                          target_os = "fuchsia", any(target_os = "linux", target_os = "runixos"),
                           target_os = "redox")))]
             Signal::SIGINFO => "SIGINFO",
         }
@@ -274,7 +274,7 @@ const SIGNALS: [Signal; 29] = [
     SIGWINCH,
     SIGIO,
     SIGSYS];
-#[cfg(all(any(target_os = "linux", target_os = "android",
+#[cfg(all(any(target_os = "linux", target_os = "runixos", target_os = "android",
               target_os = "emscripten", target_os = "fuchsia"),
           not(any(target_arch = "mips", target_arch = "mips64",
                   target_arch = "sparc64"))))]
@@ -311,7 +311,7 @@ const SIGNALS: [Signal; 31] = [
     SIGIO,
     SIGPWR,
     SIGSYS];
-#[cfg(all(any(target_os = "linux", target_os = "android",
+#[cfg(all(any(target_os = "linux", target_os = "runixos", target_os = "android",
               target_os = "emscripten", target_os = "fuchsia"),
           any(target_arch = "mips", target_arch = "mips64",
               target_arch = "sparc64")))]
@@ -347,7 +347,7 @@ const SIGNALS: [Signal; 30] = [
     SIGIO,
     SIGPWR,
     SIGSYS];
-#[cfg(not(any(target_os = "linux", target_os = "android",
+#[cfg(not(any(target_os = "linux", target_os = "runixos", target_os = "android",
               target_os = "fuchsia", target_os = "emscripten",
               target_os = "redox")))]
 #[cfg(feature = "signal")]
@@ -973,7 +973,7 @@ feature! {
 #[cfg(target_os = "freebsd")]
 pub type type_of_thread_id = libc::lwpid_t;
 /// Identifies a thread for [`SigevNotify::SigevThreadId`]
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 pub type type_of_thread_id = libc::pid_t;
 
 /// Specifies the notification method used by a [`SigEvent`]
@@ -1005,7 +1005,7 @@ pub enum SigevNotify {
         udata: libc::intptr_t
     },
     /// Notify by delivering a signal to a thread.
-    #[cfg(any(target_os = "freebsd", target_os = "linux"))]
+    #[cfg(any(target_os = "freebsd", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     SigevThreadId {
         /// Signal to send
@@ -1028,7 +1028,7 @@ mod sigevent {
     use std::mem;
     use std::ptr;
     use super::SigevNotify;
-    #[cfg(any(target_os = "freebsd", target_os = "linux"))]
+    #[cfg(any(target_os = "freebsd", any(target_os = "linux", target_os = "runixos")))]
     use super::type_of_thread_id;
 
     /// Used to request asynchronous notification of the completion of certain
@@ -1065,18 +1065,18 @@ mod sigevent {
                 SigevNotify::SigevKevent{..} => libc::SIGEV_KEVENT,
                 #[cfg(target_os = "freebsd")]
                 SigevNotify::SigevThreadId{..} => libc::SIGEV_THREAD_ID,
-                #[cfg(all(target_os = "linux", target_env = "gnu", not(target_arch = "mips")))]
+                #[cfg(all(any(target_os = "linux", target_os = "runixos"), target_env = "gnu", not(target_arch = "mips")))]
                 SigevNotify::SigevThreadId{..} => libc::SIGEV_THREAD_ID,
-                #[cfg(all(target_os = "linux", target_env = "uclibc"))]
+                #[cfg(all(any(target_os = "linux", target_os = "runixos"), target_env = "uclibc"))]
                 SigevNotify::SigevThreadId{..} => libc::SIGEV_THREAD_ID,
-                #[cfg(any(all(target_os = "linux", target_env = "musl"), target_arch = "mips"))]
+                #[cfg(any(all(any(target_os = "linux", target_os = "runixos"), target_env = "musl"), target_arch = "mips"))]
                 SigevNotify::SigevThreadId{..} => 4  // No SIGEV_THREAD_ID defined
             };
             sev.sigev_signo = match sigev_notify {
                 SigevNotify::SigevSignal{ signal, .. } => signal as libc::c_int,
                 #[cfg(any(target_os = "dragonfly", target_os = "freebsd"))]
                 SigevNotify::SigevKevent{ kq, ..} => kq,
-                #[cfg(any(target_os = "linux", target_os = "freebsd"))]
+                #[cfg(any(target_os = "linux", target_os = "runixos", target_os = "freebsd"))]
                 SigevNotify::SigevThreadId{ signal, .. } => signal as libc::c_int,
                 _ => 0
             };
@@ -1085,14 +1085,14 @@ mod sigevent {
                 SigevNotify::SigevSignal{ si_value, .. } => si_value as *mut libc::c_void,
                 #[cfg(any(target_os = "dragonfly", target_os = "freebsd"))]
                 SigevNotify::SigevKevent{ udata, .. } => udata as *mut libc::c_void,
-                #[cfg(any(target_os = "freebsd", target_os = "linux"))]
+                #[cfg(any(target_os = "freebsd", any(target_os = "linux", target_os = "runixos")))]
                 SigevNotify::SigevThreadId{ si_value, .. } => si_value as *mut libc::c_void,
             };
             SigEvent::set_tid(&mut sev, &sigev_notify);
             SigEvent{sigevent: sev}
         }
 
-        #[cfg(any(target_os = "freebsd", target_os = "linux"))]
+        #[cfg(any(target_os = "freebsd", any(target_os = "linux", target_os = "runixos")))]
         fn set_tid(sev: &mut libc::sigevent, sigev_notify: &SigevNotify) {
             sev.sigev_notify_thread_id = match *sigev_notify {
                 SigevNotify::SigevThreadId { thread_id, .. } => thread_id,
@@ -1100,7 +1100,7 @@ mod sigevent {
             };
         }
 
-        #[cfg(not(any(target_os = "freebsd", target_os = "linux")))]
+        #[cfg(not(any(target_os = "freebsd", any(target_os = "linux", target_os = "runixos"))))]
         fn set_tid(_sev: &mut libc::sigevent, _sigev_notify: &SigevNotify) {
         }
 

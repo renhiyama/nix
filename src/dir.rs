@@ -7,10 +7,10 @@ use std::ffi;
 use crate::sys;
 use cfg_if::cfg_if;
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 use libc::{dirent64 as dirent, readdir64_r as readdir_r};
 
-#[cfg(not(target_os = "linux"))]
+#[cfg(not(any(target_os = "linux", target_os = "runixos")))]
 use libc::{dirent, readdir_r};
 
 /// An open directory.
@@ -207,7 +207,7 @@ impl Entry {
                          target_os = "illumos",
                          target_os = "ios",
                          target_os = "l4re",
-                         target_os = "linux",
+                         any(target_os = "linux", target_os = "runixos"),
                          target_os = "macos",
                          target_os = "solaris"))] {
                 self.0.d_ino as u64

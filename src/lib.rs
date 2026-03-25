@@ -89,7 +89,7 @@ feature! {
               target_os = "dragonfly",
               target_os = "freebsd",
               target_os = "ios",
-              target_os = "linux",
+              any(target_os = "linux", target_os = "runixos"),
               target_os = "macos",
               target_os = "netbsd",
               target_os = "illumos",
@@ -101,7 +101,7 @@ feature! {
     pub mod net;
 }
 #[cfg(any(target_os = "android",
-          target_os = "linux"))]
+          any(target_os = "linux", target_os = "runixos")))]
 feature! {
     #![feature = "kmod"]
     #[allow(missing_docs)]
@@ -109,7 +109,7 @@ feature! {
 }
 #[cfg(any(target_os = "android",
           target_os = "freebsd",
-          target_os = "linux"))]
+          any(target_os = "linux", target_os = "runixos")))]
 feature! {
     #![feature = "mount"]
     pub mod mount;
@@ -117,7 +117,7 @@ feature! {
 #[cfg(any(target_os = "dragonfly",
           target_os = "freebsd",
           target_os = "fushsia",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "netbsd"))]
 feature! {
     #![feature = "mqueue"]
@@ -146,7 +146,7 @@ feature! {
 }
 // This can be implemented for other platforms as soon as libc
 // provides bindings for them.
-#[cfg(all(target_os = "linux",
+#[cfg(all(any(target_os = "linux", target_os = "runixos"),
           any(target_arch = "s390x", target_arch = "x86",
               target_arch = "x86_64")))]
 feature! {

@@ -178,7 +178,7 @@ impl Inotify {
     /// For more information see, [inotify_rm_watch(2)](https://man7.org/linux/man-pages/man2/inotify_rm_watch.2.html).
     pub fn rm_watch(self, wd: WatchDescriptor) -> Result<()> {
         cfg_if! {
-            if #[cfg(target_os = "linux")] {
+            if #[cfg(any(target_os = "linux", target_os = "runixos"))] {
                 let arg = wd.wd;
             } else if #[cfg(target_os = "android")] {
                 let arg = wd.wd as u32;

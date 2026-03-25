@@ -206,7 +206,7 @@ pub unsafe fn ptsname(fd: &PtyMaster) -> Result<String> {
 ///
 /// This value is useful for opening the slave ptty once the master has already been opened with
 /// `posix_openpt()`.
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 #[cfg_attr(docsrs, doc(cfg(all())))]
 #[inline]
 pub fn ptsname_r(fd: &PtyMaster) -> Result<String> {

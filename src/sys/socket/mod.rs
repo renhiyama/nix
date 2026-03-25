@@ -10,7 +10,7 @@ use std::{mem, ptr, slice};
 use std::os::unix::io::RawFd;
 #[cfg(feature = "net")]
 use std::net;
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 #[cfg(feature = "uio")]
 use crate::sys::time::TimeSpec;
 #[cfg(feature = "uio")]
@@ -71,11 +71,11 @@ pub use self::addr::{
 #[cfg(any(target_os = "ios", target_os = "macos"))]
 #[cfg(feature = "ioctl")]
 pub use crate::sys::socket::addr::sys_control::SysControlAddr;
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 pub use crate::sys::socket::addr::netlink::NetlinkAddr;
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 pub use crate::sys::socket::addr::alg::AlgAddr;
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 pub use crate::sys::socket::addr::vsock::VsockAddr;
 
 #[cfg(feature = "uio")]
@@ -162,78 +162,78 @@ pub enum SockProtocol {
     /// Receives routing and link updates and may be used to modify the routing tables (both IPv4 and IPv6), IP addresses, link
     // parameters, neighbor setups, queueing disciplines, traffic classes and packet classifiers
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkRoute = libc::NETLINK_ROUTE,
     /// Reserved for user-mode socket protocols
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkUserSock = libc::NETLINK_USERSOCK,
     /// Query information about sockets of various protocol families from the kernel
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkSockDiag = libc::NETLINK_SOCK_DIAG,
     /// SELinux event notifications.
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkSELinux = libc::NETLINK_SELINUX,
     /// Open-iSCSI
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkISCSI = libc::NETLINK_ISCSI,
     /// Auditing
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkAudit = libc::NETLINK_AUDIT,
     /// Access to FIB lookup from user space
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkFIBLookup = libc::NETLINK_FIB_LOOKUP,
     /// Netfilter subsystem
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkNetFilter = libc::NETLINK_NETFILTER,
     /// SCSI Transports
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkSCSITransport = libc::NETLINK_SCSITRANSPORT,
     /// Infiniband RDMA
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkRDMA = libc::NETLINK_RDMA,
     /// Transport IPv6 packets from netfilter to user space.  Used by ip6_queue kernel module.
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkIPv6Firewall = libc::NETLINK_IP6_FW,
     /// DECnet routing messages
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkDECNetRoutingMessage = libc::NETLINK_DNRTMSG,
     /// Kernel messages to user space
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkKObjectUEvent = libc::NETLINK_KOBJECT_UEVENT,
     /// Netlink interface to request information about ciphers registered with the kernel crypto API as well as allow
     /// configuration of the kernel crypto API.
     /// ([ref](https://www.man7.org/linux/man-pages/man7/netlink.7.html))
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     NetlinkCrypto = libc::NETLINK_CRYPTO,
 }
 
-#[cfg(any(target_os = "linux"))]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 libc_bitflags! {
     /// Configuration flags for `SO_TIMESTAMPING` interface
     ///
@@ -263,7 +263,7 @@ libc_bitflags!{
                   target_os = "dragonfly",
                   target_os = "freebsd",
                   target_os = "illumos",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "netbsd",
                   target_os = "openbsd"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
@@ -273,7 +273,7 @@ libc_bitflags!{
                   target_os = "dragonfly",
                   target_os = "freebsd",
                   target_os = "illumos",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "netbsd",
                   target_os = "openbsd"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
@@ -333,7 +333,7 @@ libc_bitflags!{
         /// This flag specifies that queued errors should be received from
         /// the socket error queue. (For more details, see
         /// [recvfrom(2)](https://linux.die.net/man/2/recvfrom))
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MSG_ERRQUEUE;
         /// Set the `close-on-exec` flag for the file descriptor received via a UNIX domain
@@ -346,7 +346,7 @@ libc_bitflags!{
         #[cfg(any(target_os = "android",
                   target_os = "dragonfly",
                   target_os = "freebsd",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "netbsd",
                   target_os = "openbsd"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
@@ -359,7 +359,7 @@ libc_bitflags!{
                   target_os = "fuchsia",
                   target_os = "haiku",
                   target_os = "illumos",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "netbsd",
                   target_os = "openbsd",
                   target_os = "solaris"))]
@@ -369,7 +369,7 @@ libc_bitflags!{
 }
 
 cfg_if! {
-    if #[cfg(any(target_os = "android", target_os = "linux"))] {
+    if #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))] {
         /// Unix credentials of the sending process.
         ///
         /// This struct is used with the `SO_PEERCRED` ancillary message
@@ -655,7 +655,7 @@ pub enum ControlMessageOwned {
     /// Received version of [`ControlMessage::ScmRights`]
     ScmRights(Vec<RawFd>),
     /// Received version of [`ControlMessage::ScmCredentials`]
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     ScmCredentials(UnixCredentials),
     /// Received version of [`ControlMessage::ScmCreds`]
@@ -723,18 +723,18 @@ pub enum ControlMessageOwned {
     /// A set of nanosecond resolution timestamps
     ///
     /// [Further reading](https://www.kernel.org/doc/html/latest/networking/timestamping.html)
-    #[cfg(all(target_os = "linux"))]
+    #[cfg(all(any(target_os = "linux", target_os = "runixos")))]
     ScmTimestampsns(Timestamps),
     /// Nanoseconds resolution timestamp
     ///
     /// [Further reading](https://www.kernel.org/doc/html/latest/networking/timestamping.html)
-    #[cfg(all(target_os = "linux"))]
+    #[cfg(all(any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     ScmTimestampns(TimeSpec),
     #[cfg(any(
         target_os = "android",
         target_os = "ios",
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos"),
         target_os = "macos",
         target_os = "netbsd",
     ))]
@@ -746,7 +746,7 @@ pub enum ControlMessageOwned {
         target_os = "dragonfly",
         target_os = "freebsd",
         target_os = "ios",
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos"),
         target_os = "macos",
         target_os = "openbsd",
         target_os = "netbsd",
@@ -783,7 +783,7 @@ pub enum ControlMessageOwned {
     ///
     /// `UdpGroSegment` socket option should be enabled on a socket
     /// to allow receiving GRO packets.
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "runixos"))]
     #[cfg(feature = "net")]
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
     UdpGroSegments(u16),
@@ -796,17 +796,17 @@ pub enum ControlMessageOwned {
     ///
     /// `RxqOvfl` socket option should be enabled on a socket
     /// to allow receiving the drop counter.
-    #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+    #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     RxqOvfl(u32),
 
     /// Socket error queue control messages read with the `MSG_ERRQUEUE` flag.
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg(feature = "net")]
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
     Ipv4RecvErr(libc::sock_extended_err, Option<sockaddr_in>),
     /// Socket error queue control messages read with the `MSG_ERRQUEUE` flag.
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg(feature = "net")]
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
     Ipv6RecvErr(libc::sock_extended_err, Option<sockaddr_in6>),
@@ -817,7 +817,7 @@ pub enum ControlMessageOwned {
 }
 
 /// For representing packet timestamps via `SO_TIMESTAMPING` interface
-#[cfg(all(target_os = "linux"))]
+#[cfg(all(any(target_os = "linux", target_os = "runixos")))]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Timestamps {
     /// software based timestamp, usually one containing data
@@ -855,7 +855,7 @@ impl ControlMessageOwned {
                 }
                 ControlMessageOwned::ScmRights(fds)
             },
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             (libc::SOL_SOCKET, libc::SCM_CREDENTIALS) => {
                 let cred: libc::ucred = ptr::read_unaligned(p as *const _);
                 ControlMessageOwned::ScmCredentials(cred.into())
@@ -869,12 +869,12 @@ impl ControlMessageOwned {
                 let tv: libc::timeval = ptr::read_unaligned(p as *const _);
                 ControlMessageOwned::ScmTimestamp(TimeVal::from(tv))
             },
-            #[cfg(all(target_os = "linux"))]
+            #[cfg(all(any(target_os = "linux", target_os = "runixos")))]
             (libc::SOL_SOCKET, libc::SCM_TIMESTAMPNS) => {
                 let ts: libc::timespec = ptr::read_unaligned(p as *const _);
                 ControlMessageOwned::ScmTimestampns(TimeSpec::from(ts))
             }
-            #[cfg(all(target_os = "linux"))]
+            #[cfg(all(any(target_os = "linux", target_os = "runixos")))]
             (libc::SOL_SOCKET, libc::SCM_TIMESTAMPING) => {
                 let tp = p as *const libc::timespec;
                 let ts: libc::timespec = ptr::read_unaligned(tp);
@@ -890,7 +890,7 @@ impl ControlMessageOwned {
                 target_os = "android",
                 target_os = "freebsd",
                 target_os = "ios",
-                target_os = "linux",
+                any(target_os = "linux", target_os = "runixos"),
                 target_os = "macos"
             ))]
             #[cfg(feature = "net")]
@@ -901,7 +901,7 @@ impl ControlMessageOwned {
             #[cfg(any(
                 target_os = "android",
                 target_os = "ios",
-                target_os = "linux",
+                any(target_os = "linux", target_os = "runixos"),
                 target_os = "macos",
                 target_os = "netbsd",
             ))]
@@ -934,24 +934,24 @@ impl ControlMessageOwned {
                 let dl = ptr::read_unaligned(p as *const libc::in_addr);
                 ControlMessageOwned::Ipv4RecvDstAddr(dl)
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             #[cfg(feature = "net")]
             (libc::SOL_UDP, libc::UDP_GRO) => {
                 let gso_size: u16 = ptr::read_unaligned(p as *const _);
                 ControlMessageOwned::UdpGroSegments(gso_size)
             },
-            #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+            #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
             (libc::SOL_SOCKET, libc::SO_RXQ_OVFL) => {
                 let drop_counter = ptr::read_unaligned(p as *const u32);
                 ControlMessageOwned::RxqOvfl(drop_counter)
             },
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             #[cfg(feature = "net")]
             (libc::IPPROTO_IP, libc::IP_RECVERR) => {
                 let (err, addr) = Self::recv_err_helper::<sockaddr_in>(p, len);
                 ControlMessageOwned::Ipv4RecvErr(err, addr)
             },
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             #[cfg(feature = "net")]
             (libc::IPPROTO_IPV6, libc::IPV6_RECVERR) => {
                 let (err, addr) = Self::recv_err_helper::<sockaddr_in6>(p, len);
@@ -965,7 +965,7 @@ impl ControlMessageOwned {
         }
     }
 
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg(feature = "net")]
     unsafe fn recv_err_helper<T>(p: *mut libc::c_uchar, len: usize) -> (libc::sock_extended_err, Option<T>) {
         let ee = p as *const libc::sock_extended_err;
@@ -1015,7 +1015,7 @@ pub enum ControlMessage<'a> {
     ///
     /// For further information, please refer to the
     /// [`unix(7)`](https://man7.org/linux/man-pages/man7/unix.7.html) man page.
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     ScmCredentials(&'a UnixCredentials),
     /// A message of type `SCM_CREDS`, containing the pid, uid, euid, gid and groups of
@@ -1040,7 +1040,7 @@ pub enum ControlMessage<'a> {
     /// [`documentation`](https://kernel.readthedocs.io/en/sphinx-samples/crypto-API.html)
     #[cfg(any(
         target_os = "android",
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos"),
     ))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     AlgSetIv(&'a [u8]),
@@ -1051,7 +1051,7 @@ pub enum ControlMessage<'a> {
     /// [`documentation`](https://kernel.readthedocs.io/en/sphinx-samples/crypto-API.html)
     #[cfg(any(
         target_os = "android",
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos"),
     ))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     AlgSetOp(&'a libc::c_int),
@@ -1062,7 +1062,7 @@ pub enum ControlMessage<'a> {
     /// [`documentation`](https://kernel.readthedocs.io/en/sphinx-samples/crypto-API.html)
     #[cfg(any(
         target_os = "android",
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos"),
     ))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     AlgSetAeadAssoclen(&'a u32),
@@ -1075,7 +1075,7 @@ pub enum ControlMessage<'a> {
     /// passed through this control message.
     /// Send buffer should consist of multiple fixed-size wire payloads
     /// following one by one, and the last, possibly smaller one.
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "runixos"))]
     #[cfg(feature = "net")]
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
     UdpGsoSegments(&'a u16),
@@ -1084,7 +1084,7 @@ pub enum ControlMessage<'a> {
     ///
     /// For further information, please refer to the
     /// [`ip(7)`](https://man7.org/linux/man-pages/man7/ip.7.html) man page.
-    #[cfg(any(target_os = "linux",
+    #[cfg(any(target_os = "linux", target_os = "runixos",
               target_os = "macos",
               target_os = "netbsd",
               target_os = "android",
@@ -1097,7 +1097,7 @@ pub enum ControlMessage<'a> {
     ///
     /// For further information, please refer to the
     /// [`ipv6(7)`](https://man7.org/linux/man-pages/man7/ipv6.7.html) man page.
-    #[cfg(any(target_os = "linux",
+    #[cfg(any(target_os = "linux", target_os = "runixos",
               target_os = "macos",
               target_os = "netbsd",
               target_os = "freebsd",
@@ -1112,7 +1112,7 @@ pub enum ControlMessage<'a> {
     /// skbs indicating the number of packets dropped by the
     /// socket between the last recieved packet and this
     /// received packet.
-    #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+    #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     RxqOvfl(&'a u32),
 
@@ -1121,7 +1121,7 @@ pub enum ControlMessage<'a> {
     /// For further information, please refer to the
     /// [`tc-etf(8)`](https://man7.org/linux/man-pages/man8/tc-etf.8.html) man
     /// page.
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "runixos"))]
     TxTime(&'a u64),
 }
 
@@ -1140,13 +1140,13 @@ impl<'a> ControlMessage<'a> {
     /// The value of CMSG_LEN on this message.
     /// Safe because CMSG_LEN is always safe
     #[cfg(any(target_os = "android",
-              all(target_os = "linux", not(target_env = "musl"))))]
+              all(any(target_os = "linux", target_os = "runixos"), not(target_env = "musl"))))]
     fn cmsg_len(&self) -> usize {
         unsafe{CMSG_LEN(self.len() as libc::c_uint) as usize}
     }
 
     #[cfg(not(any(target_os = "android",
-                  all(target_os = "linux", not(target_env = "musl")))))]
+                  all(any(target_os = "linux", target_os = "runixos"), not(target_env = "musl")))))]
     fn cmsg_len(&self) -> libc::c_uint {
         unsafe{CMSG_LEN(self.len() as libc::c_uint)}
     }
@@ -1157,7 +1157,7 @@ impl<'a> ControlMessage<'a> {
             ControlMessage::ScmRights(fds) => {
                 fds as *const _ as *const u8
             },
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::ScmCredentials(creds) => {
                 &creds.0 as *const libc::ucred as *const u8
             }
@@ -1168,7 +1168,7 @@ impl<'a> ControlMessage<'a> {
                 unsafe { ptr::write_bytes(cmsg_data, 0, self.len()) };
                 return
             }
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::AlgSetIv(iv) => {
                 #[allow(deprecated)] // https://github.com/rust-lang/libc/issues/1501
                 let af_alg_iv = libc::af_alg_iv {
@@ -1193,34 +1193,34 @@ impl<'a> ControlMessage<'a> {
 
                 return
             },
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::AlgSetOp(op) => {
                 op as *const _ as *const u8
             },
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::AlgSetAeadAssoclen(len) => {
                 len as *const _ as *const u8
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             #[cfg(feature = "net")]
             ControlMessage::UdpGsoSegments(gso_size) => {
                 gso_size as *const _ as *const u8
             },
-            #[cfg(any(target_os = "linux", target_os = "macos",
+            #[cfg(any(target_os = "linux", target_os = "runixos", target_os = "macos",
                       target_os = "netbsd", target_os = "android",
                       target_os = "ios",))]
             #[cfg(feature = "net")]
             ControlMessage::Ipv4PacketInfo(info) => info as *const _ as *const u8,
-            #[cfg(any(target_os = "linux", target_os = "macos",
+            #[cfg(any(target_os = "linux", target_os = "runixos", target_os = "macos",
                       target_os = "netbsd", target_os = "freebsd",
                       target_os = "android", target_os = "ios",))]
             #[cfg(feature = "net")]
             ControlMessage::Ipv6PacketInfo(info) => info as *const _ as *const u8,
-            #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+            #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::RxqOvfl(drop_count) => {
                 drop_count as *const _ as *const u8
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             ControlMessage::TxTime(tx_time) => {
                 tx_time as *const _ as *const u8
             },
@@ -1240,7 +1240,7 @@ impl<'a> ControlMessage<'a> {
             ControlMessage::ScmRights(fds) => {
                 mem::size_of_val(fds)
             },
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::ScmCredentials(creds) => {
                 mem::size_of_val(creds)
             }
@@ -1248,38 +1248,38 @@ impl<'a> ControlMessage<'a> {
             ControlMessage::ScmCreds => {
                 mem::size_of::<libc::cmsgcred>()
             }
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::AlgSetIv(iv) => {
                 mem::size_of_val(&iv) + iv.len()
             },
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::AlgSetOp(op) => {
                 mem::size_of_val(op)
             },
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::AlgSetAeadAssoclen(len) => {
                 mem::size_of_val(len)
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             #[cfg(feature = "net")]
             ControlMessage::UdpGsoSegments(gso_size) => {
                 mem::size_of_val(gso_size)
             },
-            #[cfg(any(target_os = "linux", target_os = "macos",
+            #[cfg(any(target_os = "linux", target_os = "runixos", target_os = "macos",
               target_os = "netbsd", target_os = "android",
               target_os = "ios",))]
             #[cfg(feature = "net")]
             ControlMessage::Ipv4PacketInfo(info) => mem::size_of_val(info),
-            #[cfg(any(target_os = "linux", target_os = "macos",
+            #[cfg(any(target_os = "linux", target_os = "runixos", target_os = "macos",
               target_os = "netbsd", target_os = "freebsd",
               target_os = "android", target_os = "ios",))]
             #[cfg(feature = "net")]
             ControlMessage::Ipv6PacketInfo(info) => mem::size_of_val(info),
-            #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+            #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::RxqOvfl(drop_count) => {
                 mem::size_of_val(drop_count)
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             ControlMessage::TxTime(tx_time) => {
                 mem::size_of_val(tx_time)
             },
@@ -1290,29 +1290,29 @@ impl<'a> ControlMessage<'a> {
     fn cmsg_level(&self) -> libc::c_int {
         match *self {
             ControlMessage::ScmRights(_) => libc::SOL_SOCKET,
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::ScmCredentials(_) => libc::SOL_SOCKET,
             #[cfg(any(target_os = "freebsd", target_os = "dragonfly"))]
             ControlMessage::ScmCreds => libc::SOL_SOCKET,
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::AlgSetIv(_) | ControlMessage::AlgSetOp(_) |
                 ControlMessage::AlgSetAeadAssoclen(_) => libc::SOL_ALG,
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             #[cfg(feature = "net")]
             ControlMessage::UdpGsoSegments(_) => libc::SOL_UDP,
-            #[cfg(any(target_os = "linux", target_os = "macos",
+            #[cfg(any(target_os = "linux", target_os = "runixos", target_os = "macos",
                       target_os = "netbsd", target_os = "android",
                       target_os = "ios",))]
             #[cfg(feature = "net")]
             ControlMessage::Ipv4PacketInfo(_) => libc::IPPROTO_IP,
-            #[cfg(any(target_os = "linux", target_os = "macos",
+            #[cfg(any(target_os = "linux", target_os = "runixos", target_os = "macos",
               target_os = "netbsd", target_os = "freebsd",
               target_os = "android", target_os = "ios",))]
             #[cfg(feature = "net")]
             ControlMessage::Ipv6PacketInfo(_) => libc::IPPROTO_IPV6,
-            #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+            #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::RxqOvfl(_) => libc::SOL_SOCKET,
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             ControlMessage::TxTime(_) => libc::SOL_SOCKET,
         }
     }
@@ -1321,42 +1321,42 @@ impl<'a> ControlMessage<'a> {
     fn cmsg_type(&self) -> libc::c_int {
         match *self {
             ControlMessage::ScmRights(_) => libc::SCM_RIGHTS,
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::ScmCredentials(_) => libc::SCM_CREDENTIALS,
             #[cfg(any(target_os = "freebsd", target_os = "dragonfly"))]
             ControlMessage::ScmCreds => libc::SCM_CREDS,
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::AlgSetIv(_) => {
                 libc::ALG_SET_IV
             },
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::AlgSetOp(_) => {
                 libc::ALG_SET_OP
             },
-            #[cfg(any(target_os = "android", target_os = "linux"))]
+            #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::AlgSetAeadAssoclen(_) => {
                 libc::ALG_SET_AEAD_ASSOCLEN
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             #[cfg(feature = "net")]
             ControlMessage::UdpGsoSegments(_) => {
                 libc::UDP_SEGMENT
             },
-            #[cfg(any(target_os = "linux", target_os = "macos",
+            #[cfg(any(target_os = "linux", target_os = "runixos", target_os = "macos",
                       target_os = "netbsd", target_os = "android",
                       target_os = "ios",))]
             #[cfg(feature = "net")]
             ControlMessage::Ipv4PacketInfo(_) => libc::IP_PKTINFO,
-            #[cfg(any(target_os = "linux", target_os = "macos",
+            #[cfg(any(target_os = "linux", target_os = "runixos", target_os = "macos",
                       target_os = "netbsd", target_os = "freebsd",
                       target_os = "android", target_os = "ios",))]
             #[cfg(feature = "net")]
             ControlMessage::Ipv6PacketInfo(_) => libc::IPV6_PKTINFO,
-            #[cfg(any(target_os = "android", target_os = "fuchsia", target_os = "linux"))]
+            #[cfg(any(target_os = "android", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
             ControlMessage::RxqOvfl(_) => {
                 libc::SO_RXQ_OVFL
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             ControlMessage::TxTime(_) => {
                 libc::SCM_TXTIME
             },
@@ -1430,7 +1430,7 @@ pub fn sendmsg<S>(fd: RawFd, iov: &[IoSlice<'_>], cmsgs: &[ControlMessage],
 }
 
 #[cfg(any(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "android",
     target_os = "freebsd",
     target_os = "netbsd",
@@ -1466,7 +1466,7 @@ pub struct SendMmsgData<'a, I, C, S>
 /// # References
 /// [`sendmsg`](fn.sendmsg.html)
 #[cfg(any(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "android",
     target_os = "freebsd",
     target_os = "netbsd",
@@ -1520,7 +1520,7 @@ pub fn sendmmsg<'a, I, C, S>(
 
 
 #[cfg(any(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "android",
     target_os = "freebsd",
     target_os = "netbsd",
@@ -1561,7 +1561,7 @@ pub struct RecvMmsgData<'a, I>
 /// - [`recvmsg`](fn.recvmsg.html)
 /// - [`RecvMsg`](struct.RecvMsg.html)
 #[cfg(any(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "android",
     target_os = "freebsd",
     target_os = "netbsd",
@@ -1889,7 +1889,7 @@ pub fn accept(sockfd: RawFd) -> Result<RawFd> {
           target_os = "freebsd",
           target_os = "fuchsia",
           target_os = "illumos",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "netbsd",
           target_os = "openbsd"))]
 pub fn accept4(sockfd: RawFd, flags: SockFlag) -> Result<RawFd> {
@@ -2119,7 +2119,7 @@ pub fn sockaddr_storage_to_addr(
                 Ok(SockAddr::Unix(UnixAddr::from_raw_parts(sun, sun_len)))
             }
         }
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg(feature = "net")]
         libc::AF_PACKET => {
             use libc::sockaddr_ll;
@@ -2132,7 +2132,7 @@ pub fn sockaddr_storage_to_addr(
             };
             Ok(SockAddr::Link(LinkAddr(sll)))
         }
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         libc::AF_NETLINK => {
             use libc::sockaddr_nl;
             let snl = unsafe {
@@ -2140,7 +2140,7 @@ pub fn sockaddr_storage_to_addr(
             };
             Ok(SockAddr::Netlink(NetlinkAddr(snl)))
         }
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         libc::AF_ALG => {
             use libc::sockaddr_alg;
             let salg = unsafe {
@@ -2148,7 +2148,7 @@ pub fn sockaddr_storage_to_addr(
             };
             Ok(SockAddr::Alg(AlgAddr(salg)))
         }
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         libc::AF_VSOCK => {
             use libc::sockaddr_vm;
             let svm = unsafe {

@@ -22,11 +22,11 @@ libc_bitflags!{
         /// Pages can be executed
         PROT_EXEC;
         /// Apply protection up to the end of a mapping that grows upwards.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         PROT_GROWSDOWN;
         /// Apply protection down to the beginning of a mapping that grows downwards.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         PROT_GROWSUP;
     }
@@ -44,7 +44,7 @@ libc_bitflags!{
         /// Place the mapping at exactly the address specified in `addr`.
         MAP_FIXED;
         /// Place the mapping at exactly the address specified in `addr`, but never clobber an existing range.
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_FIXED_NOREPLACE;
         /// To be used with `MAP_FIXED`, to forbid the system
@@ -57,26 +57,26 @@ libc_bitflags!{
         /// The mapping is not backed by any file.
         MAP_ANONYMOUS;
         /// Put the mapping into the first 2GB of the process address space.
-        #[cfg(any(all(any(target_os = "android", target_os = "linux"),
+        #[cfg(any(all(any(target_os = "android", any(target_os = "linux", target_os = "runixos")),
                       any(target_arch = "x86", target_arch = "x86_64")),
-                  all(target_os = "linux", target_env = "musl", any(target_arch = "x86", target_arch = "x86_64")),
+                  all(any(target_os = "linux", target_os = "runixos"), target_env = "musl", any(target_arch = "x86", target_arch = "x86_64")),
                   all(target_os = "freebsd", target_pointer_width = "64")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_32BIT;
         /// Used for stacks; indicates to the kernel that the mapping should extend downward in memory.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_GROWSDOWN;
         /// Compatibility flag. Ignored.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_DENYWRITE;
         /// Compatibility flag. Ignored.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_EXECUTABLE;
         /// Mark the mmaped region to be locked in the same way as `mlock(2)`.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_LOCKED;
         /// Do not reserve swap space for this mapping.
@@ -86,63 +86,63 @@ libc_bitflags!{
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_NORESERVE;
         /// Populate page tables for a mapping.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_POPULATE;
         /// Only meaningful when used with `MAP_POPULATE`. Don't perform read-ahead.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_NONBLOCK;
         /// Allocate the mapping using "huge pages."
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HUGETLB;
         /// Make use of 64KB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HUGE_64KB;
         /// Make use of 512KB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HUGE_512KB;
         /// Make use of 1MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HUGE_1MB;
         /// Make use of 2MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HUGE_2MB;
         /// Make use of 8MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HUGE_8MB;
         /// Make use of 16MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HUGE_16MB;
         /// Make use of 32MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HUGE_32MB;
         /// Make use of 256MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HUGE_256MB;
         /// Make use of 512MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HUGE_512MB;
         /// Make use of 1GB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HUGE_1GB;
         /// Make use of 2GB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HUGE_2GB;
         /// Make use of 16GB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HUGE_16GB;
 
@@ -165,7 +165,7 @@ libc_bitflags!{
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_HASSEMAPHORE;
         /// Region grows down, like a stack.
-        #[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "freebsd", target_os = "linux", target_os = "openbsd"))]
+        #[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "freebsd", any(target_os = "linux", target_os = "runixos"), target_os = "openbsd"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MAP_STACK;
         /// Pages in this mapping are not retained in the kernel's memory cache.
@@ -187,16 +187,16 @@ libc_bitflags!{
     }
 }
 
-#[cfg(any(target_os = "linux", target_os = "netbsd"))]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "netbsd"))]
 libc_bitflags!{
     /// Options for [`mremap`].
     pub struct MRemapFlags: c_int {
         /// Permit the kernel to relocate the mapping to a new virtual address, if necessary.
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MREMAP_MAYMOVE;
         /// Place the mapping at exactly the address specified in `new_address`.
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MREMAP_FIXED;
         /// Place the mapping at exactly the address specified in `new_address`.
@@ -228,34 +228,34 @@ libc_enum!{
         /// Do not expect access in the near future.
         MADV_DONTNEED,
         /// Free up a given range of pages and its associated backing store.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MADV_REMOVE,
         /// Do not make pages in this range available to the child after a `fork(2)`.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MADV_DONTFORK,
         /// Undo the effect of `MADV_DONTFORK`.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MADV_DOFORK,
         /// Poison the given pages.
         ///
         /// Subsequent references to those pages are treated like hardware memory corruption.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MADV_HWPOISON,
         /// Enable Kernel Samepage Merging (KSM) for the given pages.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MADV_MERGEABLE,
         /// Undo the effect of `MADV_MERGEABLE`
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MADV_UNMERGEABLE,
         /// Preserve the memory of each page but offline the original page.
         #[cfg(any(target_os = "android",
-            all(target_os = "linux", any(
+            all(any(target_os = "linux", target_os = "runixos"), any(
                 target_arch = "aarch64",
                 target_arch = "arm",
                 target_arch = "powerpc",
@@ -266,19 +266,19 @@ libc_enum!{
                 target_arch = "sparc64"))))]
         MADV_SOFT_OFFLINE,
         /// Enable Transparent Huge Pages (THP) for pages in the given range.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MADV_HUGEPAGE,
         /// Undo the effect of `MADV_HUGEPAGE`.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MADV_NOHUGEPAGE,
         /// Exclude the given range from a core dump.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MADV_DONTDUMP,
         /// Undo the effect of an earlier `MADV_DONTDUMP`.
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         MADV_DODUMP,
         /// Specify that the application no longer needs the pages in the given range.
@@ -430,7 +430,7 @@ pub unsafe fn mmap(addr: *mut c_void, length: size_t, prot: ProtFlags, flags: Ma
 ///
 /// See the `mremap(2)` [man page](https://man7.org/linux/man-pages/man2/mremap.2.html) for
 /// detailed requirements.
-#[cfg(any(target_os = "linux", target_os = "netbsd"))]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "netbsd"))]
 pub unsafe fn mremap(
     addr: *mut c_void,
     old_size: size_t,
@@ -438,7 +438,7 @@ pub unsafe fn mremap(
     flags: MRemapFlags,
     new_address: Option<* mut c_void>,
 ) -> Result<*mut c_void> {
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "runixos"))]
     let ret = libc::mremap(addr, old_size, new_size, flags.bits(), new_address.unwrap_or(std::ptr::null_mut()));
     #[cfg(target_os = "netbsd")]
     let ret = libc::mremap(

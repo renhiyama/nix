@@ -2,7 +2,7 @@ use crate::sys::time::TimeSpec;
 #[cfg(any(
     target_os = "freebsd",
     target_os = "dragonfly",
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "android",
     target_os = "emscripten",
 ))]
@@ -31,7 +31,7 @@ impl ClockId {
     #[cfg(any(
         target_os = "freebsd",
         target_os = "dragonfly",
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos"),
         target_os = "android",
         target_os = "emscripten",
     ))]
@@ -74,7 +74,7 @@ impl ClockId {
         target_os = "android",
         target_os = "emscripten",
         target_os = "fuchsia",
-        target_os = "linux"
+        any(target_os = "linux", target_os = "runixos")
     ))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     pub const CLOCK_BOOTTIME: ClockId = ClockId(libc::CLOCK_BOOTTIME);
@@ -82,7 +82,7 @@ impl ClockId {
         target_os = "android",
         target_os = "emscripten",
         target_os = "fuchsia",
-        target_os = "linux"
+        any(target_os = "linux", target_os = "runixos")
     ))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     pub const CLOCK_BOOTTIME_ALARM: ClockId = ClockId(libc::CLOCK_BOOTTIME_ALARM);
@@ -91,7 +91,7 @@ impl ClockId {
         target_os = "android",
         target_os = "emscripten",
         target_os = "fuchsia",
-        target_os = "linux"
+        any(target_os = "linux", target_os = "runixos")
     ))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     pub const CLOCK_MONOTONIC_COARSE: ClockId = ClockId(libc::CLOCK_MONOTONIC_COARSE);
@@ -105,7 +105,7 @@ impl ClockId {
         target_os = "android",
         target_os = "emscripten",
         target_os = "fuchsia",
-        target_os = "linux"
+        any(target_os = "linux", target_os = "runixos")
     ))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     pub const CLOCK_MONOTONIC_RAW: ClockId = ClockId(libc::CLOCK_MONOTONIC_RAW);
@@ -118,7 +118,7 @@ impl ClockId {
         target_os = "freebsd",
         target_os = "dragonfly",
         target_os = "redox",
-        target_os = "linux"
+        any(target_os = "linux", target_os = "runixos")
     ))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     pub const CLOCK_PROCESS_CPUTIME_ID: ClockId = ClockId(libc::CLOCK_PROCESS_CPUTIME_ID);
@@ -130,7 +130,7 @@ impl ClockId {
         target_os = "android",
         target_os = "emscripten",
         target_os = "fuchsia",
-        target_os = "linux"
+        any(target_os = "linux", target_os = "runixos")
     ))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     pub const CLOCK_REALTIME_ALARM: ClockId = ClockId(libc::CLOCK_REALTIME_ALARM);
@@ -138,7 +138,7 @@ impl ClockId {
         target_os = "android",
         target_os = "emscripten",
         target_os = "fuchsia",
-        target_os = "linux"
+        any(target_os = "linux", target_os = "runixos")
     ))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     pub const CLOCK_REALTIME_COARSE: ClockId = ClockId(libc::CLOCK_REALTIME_COARSE);
@@ -154,7 +154,7 @@ impl ClockId {
     #[cfg(any(
         target_os = "emscripten",
         target_os = "fuchsia",
-        all(target_os = "linux", target_env = "musl")
+        all(any(target_os = "linux", target_os = "runixos"), target_env = "musl")
     ))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     pub const CLOCK_SGI_CYCLE: ClockId = ClockId(libc::CLOCK_SGI_CYCLE);
@@ -162,7 +162,7 @@ impl ClockId {
         target_os = "android",
         target_os = "emscripten",
         target_os = "fuchsia",
-        target_os = "linux"
+        any(target_os = "linux", target_os = "runixos")
     ))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     pub const CLOCK_TAI: ClockId = ClockId(libc::CLOCK_TAI);
@@ -174,7 +174,7 @@ impl ClockId {
         target_os = "macos",
         target_os = "freebsd",
         target_os = "dragonfly",
-        target_os = "linux"
+        any(target_os = "linux", target_os = "runixos")
     ))]
     #[cfg_attr(docsrs, doc(cfg(all())))]
     pub const CLOCK_THREAD_CPUTIME_ID: ClockId = ClockId(libc::CLOCK_THREAD_CPUTIME_ID);
@@ -251,7 +251,7 @@ pub fn clock_settime(clock_id: ClockId, timespec: TimeSpec) -> Result<()> {
 #[cfg(any(
     target_os = "freebsd",
     target_os = "dragonfly",
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "android",
     target_os = "emscripten",
 ))]

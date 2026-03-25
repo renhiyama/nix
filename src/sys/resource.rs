@@ -7,7 +7,7 @@ pub use libc::rlim_t;
 use std::mem;
 
 cfg_if! {
-    if #[cfg(all(target_os = "linux", any(target_env = "gnu", target_env = "uclibc")))]{
+    if #[cfg(all(any(target_os = "linux", target_os = "runixos"), any(target_env = "gnu", target_env = "uclibc")))]{
         use libc::{__rlimit_resource_t, rlimit};
     } else if #[cfg(any(
         target_os = "freebsd",
@@ -17,7 +17,7 @@ cfg_if! {
         target_os = "ios",
         target_os = "android",
         target_os = "dragonfly",
-        all(target_os = "linux", not(target_env = "gnu"))
+        all(any(target_os = "linux", target_os = "runixos"), not(target_env = "gnu"))
     ))]{
         use libc::{c_int, rlimit};
     }
@@ -39,7 +39,7 @@ libc_enum! {
     //
     // https://gcc.gnu.org/legacy-ml/gcc/2015-08/msg00441.html
     // https://github.com/rust-lang/libc/blob/master/src/unix/linux_like/linux/gnu/mod.rs
-    #[cfg_attr(all(target_os = "linux", any(target_env = "gnu", target_env = "uclibc")), repr(u32))]
+    #[cfg_attr(all(any(target_os = "linux", target_os = "runixos"), any(target_env = "gnu", target_env = "uclibc")), repr(u32))]
     #[cfg_attr(any(
             target_os = "freebsd",
             target_os = "openbsd",
@@ -48,7 +48,7 @@ libc_enum! {
             target_os = "ios",
             target_os = "android",
             target_os = "dragonfly",
-            all(target_os = "linux", not(any(target_env = "gnu", target_env = "uclibc")))
+            all(any(target_os = "linux", target_os = "runixos"), not(any(target_env = "gnu", target_env = "uclibc")))
         ), repr(i32))]
     #[non_exhaustive]
     pub enum Resource {
@@ -76,7 +76,7 @@ libc_enum! {
         /// The maximum number of kqueues this user id is allowed to create.
         RLIMIT_KQUEUES,
 
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         /// A limit on the combined number of flock locks and fcntl leases that
         /// this process may establish.
@@ -86,7 +86,7 @@ libc_enum! {
             target_os = "android",
             target_os = "freebsd",
             target_os = "openbsd",
-            target_os = "linux",
+            any(target_os = "linux", target_os = "runixos"),
             target_os = "netbsd"
         ))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
@@ -94,13 +94,13 @@ libc_enum! {
         /// using the mlock(2) system call.
         RLIMIT_MEMLOCK,
 
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         /// A limit on the number of bytes that can be allocated for POSIX
         /// message queues  for  the  real  user  ID  of  the  calling process.
         RLIMIT_MSGQUEUE,
 
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         /// A ceiling to which the process's nice value can be raised using
         /// setpriority or nice.
@@ -111,7 +111,7 @@ libc_enum! {
             target_os = "freebsd",
             target_os = "netbsd",
             target_os = "openbsd",
-            target_os = "linux",
+            any(target_os = "linux", target_os = "runixos"),
         ))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         /// The maximum number of simultaneous processes for this user id.
@@ -127,27 +127,27 @@ libc_enum! {
             target_os = "freebsd",
             target_os = "netbsd",
             target_os = "openbsd",
-            target_os = "linux",
+            any(target_os = "linux", target_os = "runixos"),
         ))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         /// When there is memory pressure and swap is available, prioritize
         /// eviction of a process' resident pages beyond this amount (in bytes).
         RLIMIT_RSS,
 
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         /// A ceiling on the real-time priority that may be set for this process
         /// using sched_setscheduler and  sched_set‐ param.
         RLIMIT_RTPRIO,
 
-        #[cfg(any(target_os = "linux"))]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         /// A limit (in microseconds) on the amount of CPU time that a process
         /// scheduled under a real-time scheduling policy may con‐ sume without
         /// making a blocking system call.
         RLIMIT_RTTIME,
 
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         /// A limit on the number of signals that may be queued for the real
         /// user ID of the  calling  process.
@@ -199,7 +199,7 @@ pub fn getrlimit(resource: Resource) -> Result<(rlim_t, rlim_t)> {
     let mut old_rlim = mem::MaybeUninit::<rlimit>::uninit();
 
     cfg_if! {
-        if #[cfg(all(target_os = "linux", any(target_env = "gnu", target_env = "uclibc")))]{
+        if #[cfg(all(any(target_os = "linux", target_os = "runixos"), any(target_env = "gnu", target_env = "uclibc")))]{
             let res = unsafe { libc::getrlimit(resource as __rlimit_resource_t, old_rlim.as_mut_ptr()) };
         } else {
             let res = unsafe { libc::getrlimit(resource as c_int, old_rlim.as_mut_ptr()) };
@@ -252,7 +252,7 @@ pub fn setrlimit(
         rlim_max: hard_limit,
     };
     cfg_if! {
-        if #[cfg(all(target_os = "linux", any(target_env = "gnu", target_env = "uclibc")))]{
+        if #[cfg(all(any(target_os = "linux", target_os = "runixos"), any(target_env = "gnu", target_env = "uclibc")))]{
             let res = unsafe { libc::setrlimit(resource as __rlimit_resource_t, &new_rlim as *const rlimit) };
         }else{
             let res = unsafe { libc::setrlimit(resource as c_int, &new_rlim as *const rlimit) };

@@ -33,7 +33,7 @@ pub struct InterfaceAddress {
 }
 
 cfg_if! {
-    if #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuchsia", target_os = "linux"))] {
+    if #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))] {
         fn get_ifu_from_sockaddr(info: &libc::ifaddrs) -> *const libc::sockaddr {
             info.ifa_ifu
         }

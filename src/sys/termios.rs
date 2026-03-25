@@ -315,47 +315,47 @@ libc_enum!{
         #[cfg(any(target_os = "android",
                   target_os = "freebsd",
                   target_os = "illumos",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "netbsd",
                   target_os = "solaris"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         B460800,
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         B500000,
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         B576000,
         #[cfg(any(target_os = "android",
                   target_os = "freebsd",
                   target_os = "illumos",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "netbsd",
                   target_os = "solaris"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         B921600,
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         B1000000,
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         B1152000,
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         B1500000,
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         B2000000,
-        #[cfg(any(target_os = "android", all(target_os = "linux", not(target_arch = "sparc64"))))]
+        #[cfg(any(target_os = "android", all(any(target_os = "linux", target_os = "runixos"), not(target_arch = "sparc64"))))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         B2500000,
-        #[cfg(any(target_os = "android", all(target_os = "linux", not(target_arch = "sparc64"))))]
+        #[cfg(any(target_os = "android", all(any(target_os = "linux", target_os = "runixos"), not(target_arch = "sparc64"))))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         B3000000,
-        #[cfg(any(target_os = "android", all(target_os = "linux", not(target_arch = "sparc64"))))]
+        #[cfg(any(target_os = "android", all(any(target_os = "linux", target_os = "runixos"), not(target_arch = "sparc64"))))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         B3500000,
-        #[cfg(any(target_os = "android", all(target_os = "linux", not(target_arch = "sparc64"))))]
+        #[cfg(any(target_os = "android", all(any(target_os = "linux", target_os = "runixos"), not(target_arch = "sparc64"))))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         B4000000,
     }
@@ -454,7 +454,7 @@ libc_enum! {
         VINTR,
         VKILL,
         VLNEXT,
-        #[cfg(not(any(all(target_os = "linux", target_arch = "sparc64"),
+        #[cfg(not(any(all(any(target_os = "linux", target_os = "runixos"), target_arch = "sparc64"),
                 target_os = "illumos", target_os = "solaris")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         VMIN,
@@ -472,13 +472,13 @@ libc_enum! {
         VSTATUS,
         VSTOP,
         VSUSP,
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         VSWTC,
         #[cfg(any(target_os = "haiku", target_os = "illumos", target_os = "solaris"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         VSWTCH,
-        #[cfg(not(any(all(target_os = "linux", target_arch = "sparc64"),
+        #[cfg(not(any(all(any(target_os = "linux", target_os = "runixos"), target_arch = "sparc64"),
                 target_os = "illumos", target_os = "solaris")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         VTIME,
@@ -489,7 +489,7 @@ libc_enum! {
     }
 }
 
-#[cfg(any(all(target_os = "linux", target_arch = "sparc64"),
+#[cfg(any(all(any(target_os = "linux", target_os = "runixos"), target_arch = "sparc64"),
         target_os = "illumos", target_os = "solaris"))]
 impl SpecialCharacterIndices {
     pub const VMIN: SpecialCharacterIndices = SpecialCharacterIndices::VEOF;
@@ -500,7 +500,7 @@ pub use libc::NCCS;
 #[cfg(any(target_os = "android",
           target_os = "dragonfly",
           target_os = "freebsd",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "macos",
           target_os = "netbsd",
           target_os = "openbsd"))]
@@ -527,7 +527,7 @@ libc_bitflags! {
         #[cfg(not(target_os = "redox"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IMAXBEL;
-        #[cfg(any(target_os = "android", target_os = "linux", target_os = "macos"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos"), target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         IUTF8;
     }
@@ -539,7 +539,7 @@ libc_bitflags! {
         OPOST;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "openbsd"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         OLCUC;
@@ -550,56 +550,56 @@ libc_bitflags! {
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         OFILL as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         OFDEL as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         NL0 as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         NL1 as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         CR0 as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         CR1 as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         CR2 as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         CR3 as tcflag_t;
@@ -607,21 +607,21 @@ libc_bitflags! {
                   target_os = "freebsd",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         TAB0 as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         TAB1 as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         TAB2 as tcflag_t;
@@ -629,52 +629,52 @@ libc_bitflags! {
                   target_os = "freebsd",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         TAB3 as tcflag_t;
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         XTABS;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         BS0 as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         BS1 as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         VT0 as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         VT1 as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         FF0 as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         FF1 as tcflag_t;
@@ -701,14 +701,14 @@ libc_bitflags! {
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         NLDLY as tcflag_t; // FIXME: Datatype needs to be corrected in libc for mac
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         CRDLY as tcflag_t;
@@ -716,28 +716,28 @@ libc_bitflags! {
                   target_os = "freebsd",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         TABDLY as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         BSDLY as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         VTDLY as tcflag_t;
         #[cfg(any(target_os = "android",
                   target_os = "haiku",
                   target_os = "ios",
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "macos"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         FFDLY as tcflag_t;
@@ -768,17 +768,17 @@ libc_bitflags! {
         #[cfg(not(target_os = "redox"))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         CRTSCTS;
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         CBAUD;
-        #[cfg(any(target_os = "android", all(target_os = "linux", not(target_arch = "mips"))))]
+        #[cfg(any(target_os = "android", all(any(target_os = "linux", target_os = "runixos"), not(target_arch = "mips"))))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         CMSPAR;
         #[cfg(any(target_os = "android",
-                  all(target_os = "linux",
+                  all(any(target_os = "linux", target_os = "runixos"),
                       not(any(target_arch = "powerpc", target_arch = "powerpc64")))))]
         CIBAUD;
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
         #[cfg_attr(docsrs, doc(cfg(all())))]
         CBAUDEX;
         #[cfg(any(target_os = "dragonfly",

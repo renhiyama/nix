@@ -2,7 +2,7 @@
 #[cfg(any(target_os = "dragonfly",
           target_os = "freebsd",
           target_os = "ios",
-          all(target_os = "linux", not(target_env = "uclibc")),
+          all(any(target_os = "linux", target_os = "runixos"), not(target_env = "uclibc")),
           target_os = "macos",
           target_os = "netbsd"))]
 feature! {
@@ -13,7 +13,7 @@ feature! {
 feature! {
     #![feature = "event"]
 
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[allow(missing_docs)]
     pub mod epoll;
 
@@ -26,7 +26,7 @@ feature! {
     #[allow(missing_docs)]
     pub mod event;
 
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     #[allow(missing_docs)]
     pub mod eventfd;
 }
@@ -35,7 +35,7 @@ feature! {
           target_os = "dragonfly",
           target_os = "freebsd",
           target_os = "ios",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "redox",
           target_os = "macos",
           target_os = "netbsd",
@@ -46,7 +46,7 @@ feature! {
 #[macro_use]
 pub mod ioctl;
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 feature! {
     #![feature = "fs"]
     pub mod memfd;
@@ -58,7 +58,7 @@ feature! {
     pub mod mman;
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 feature! {
     #![feature = "personality"]
     pub mod personality;
@@ -72,7 +72,7 @@ feature! {
 #[cfg(any(target_os = "android",
           target_os = "dragonfly",
           target_os = "freebsd",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "macos",
           target_os = "netbsd",
           target_os = "openbsd"))]
@@ -82,13 +82,13 @@ feature! {
     pub mod ptrace;
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 feature! {
     #![feature = "quota"]
     pub mod quota;
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 feature! {
     #![feature = "reboot"]
     pub mod reboot;
@@ -110,7 +110,7 @@ feature! {
           target_os = "dragonfly",
           target_os = "freebsd",
           target_os = "ios",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "macos"))]
 feature! {
     #![feature = "zerocopy"]
@@ -119,7 +119,7 @@ feature! {
 
 pub mod signal;
 
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 feature! {
     #![feature = "signal"]
     #[allow(missing_docs)]
@@ -143,7 +143,7 @@ feature! {
           target_os = "dragonfly",
           target_os = "freebsd",
           target_os = "ios",
-          target_os = "linux",
+          any(target_os = "linux", target_os = "runixos"),
           target_os = "macos",
           target_os = "openbsd"
 ))]
@@ -157,7 +157,7 @@ feature! {
     pub mod statvfs;
 }
 
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 #[cfg_attr(docsrs, doc(cfg(all())))]
 #[allow(missing_docs)]
 pub mod sysinfo;
@@ -186,13 +186,13 @@ feature! {
     pub mod wait;
 }
 
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 feature! {
     #![feature = "inotify"]
     pub mod inotify;
 }
 
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 feature! {
     #![feature = "time"]
     pub mod timerfd;
@@ -202,7 +202,7 @@ feature! {
     any(
         target_os = "freebsd",
         target_os = "illumos",
-        target_os = "linux",
+        any(target_os = "linux", target_os = "runixos"),
         target_os = "netbsd"
     ),
     feature = "time",

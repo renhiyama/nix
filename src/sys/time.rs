@@ -10,12 +10,12 @@ const TIMESPEC_ZERO: libc::timespec = unsafe {
 };
 
 #[cfg(any(
-    all(feature = "time", any(target_os = "android", target_os = "linux")),
+    all(feature = "time", any(target_os = "android", any(target_os = "linux", target_os = "runixos"))),
     all(
         any(
             target_os = "freebsd",
             target_os = "illumos",
-            target_os = "linux",
+            any(target_os = "linux", target_os = "runixos"),
             target_os = "netbsd"
         ),
         feature = "time",
@@ -82,7 +82,7 @@ pub(crate) mod timer {
         Interval(TimeSpec),
     }
 
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
     bitflags! {
         /// Flags that are used for arming the timer.
         pub struct TimerSetTimeFlags: libc::c_int {

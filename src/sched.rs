@@ -4,10 +4,10 @@
 //! [sched.h](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sched.h.html)
 use crate::{Errno, Result};
 
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 pub use self::sched_linux_like::*;
 
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 #[cfg_attr(docsrs, doc(cfg(all())))]
 mod sched_linux_like {
     use crate::errno::Errno;
@@ -142,10 +142,10 @@ mod sched_linux_like {
     }
 }
 
-#[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "linux"))]
+#[cfg(any(target_os = "android", target_os = "dragonfly", any(target_os = "linux", target_os = "runixos")))]
 pub use self::sched_affinity::*;
 
-#[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "linux"))]
+#[cfg(any(target_os = "android", target_os = "dragonfly", any(target_os = "linux", target_os = "runixos")))]
 mod sched_affinity {
     use crate::errno::Errno;
     use std::mem;

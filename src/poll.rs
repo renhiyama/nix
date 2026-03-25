@@ -152,7 +152,7 @@ feature! {
 /// with the `sigmask` argument. If you want `ppoll` to block indefinitely,
 /// specify `None` as `timeout` (it is like `timeout = -1` for `poll`).
 ///
-#[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "freebsd", target_os = "linux"))]
+#[cfg(any(target_os = "android", target_os = "dragonfly", target_os = "freebsd", any(target_os = "linux", target_os = "runixos")))]
 pub fn ppoll(
     fds: &mut [PollFd],
     timeout: Option<crate::sys::time::TimeSpec>,

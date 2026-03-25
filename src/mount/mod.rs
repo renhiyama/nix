@@ -1,9 +1,9 @@
 //! Mount file systems
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 #[cfg_attr(docsrs, doc(cfg(all())))]
 mod linux;
 
-#[cfg(any(target_os = "android", target_os = "linux"))]
+#[cfg(any(target_os = "android", any(target_os = "linux", target_os = "runixos")))]
 pub use self::linux::*;
 
 #[cfg(any(target_os = "dragonfly",
