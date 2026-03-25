@@ -11,7 +11,7 @@ use std::{mem, ptr};
 pub type AddressType = *mut ::libc::c_void;
 
 #[cfg(all(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     any(
         all(
             target_arch = "x86_64",
@@ -25,8 +25,8 @@ pub type AddressType = *mut ::libc::c_void;
 use libc::user_regs_struct;
 
 cfg_if! {
-    if #[cfg(any(all(target_os = "linux", target_arch = "s390x"),
-                 all(target_os = "linux", target_env = "gnu"),
+    if #[cfg(any(all(any(target_os = "linux", target_os = "runixos"), target_arch = "s390x"),
+                 all(any(target_os = "linux", target_os = "runixos"), target_env = "gnu"),
                  target_env = "uclibc"))] {
         #[doc(hidden)]
         pub type RequestType = ::libc::c_uint;
@@ -53,7 +53,7 @@ libc_enum! {
         PTRACE_KILL,
         PTRACE_SINGLESTEP,
         #[cfg(any(all(target_os = "android", target_pointer_width = "32"),
-                  all(target_os = "linux", any(target_env = "musl",
+                  all(any(target_os = "linux", target_os = "runixos"), any(target_env = "musl",
                                                target_arch = "mips",
                                                target_arch = "mips32r6",
                                                target_arch = "mips64",
@@ -62,7 +62,7 @@ libc_enum! {
                                                target_pointer_width = "32"))))]
         PTRACE_GETREGS,
         #[cfg(any(all(target_os = "android", target_pointer_width = "32"),
-                  all(target_os = "linux", any(target_env = "musl",
+                  all(any(target_os = "linux", target_os = "runixos"), any(target_env = "musl",
                                                target_arch = "mips",
                                                target_arch = "mips32r6",
                                                target_arch = "mips64",
@@ -71,7 +71,7 @@ libc_enum! {
                                                target_pointer_width = "32"))))]
         PTRACE_SETREGS,
         #[cfg(any(all(target_os = "android", target_pointer_width = "32"),
-                  all(target_os = "linux", any(target_env = "musl",
+                  all(any(target_os = "linux", target_os = "runixos"), any(target_env = "musl",
                                                target_arch = "mips",
                                                target_arch = "mips32r6",
                                                target_arch = "mips64",
@@ -80,7 +80,7 @@ libc_enum! {
                                                target_pointer_width = "32"))))]
         PTRACE_GETFPREGS,
         #[cfg(any(all(target_os = "android", target_pointer_width = "32"),
-                  all(target_os = "linux", any(target_env = "musl",
+                  all(any(target_os = "linux", target_os = "runixos"), any(target_env = "musl",
                                                target_arch = "mips",
                                                target_arch = "mips32r6",
                                                target_arch = "mips64",
@@ -90,7 +90,7 @@ libc_enum! {
         PTRACE_SETFPREGS,
         PTRACE_ATTACH,
         PTRACE_DETACH,
-        #[cfg(all(target_os = "linux", any(target_env = "musl",
+        #[cfg(all(any(target_os = "linux", target_os = "runixos"), any(target_env = "musl",
                                            target_arch = "mips",
                                            target_arch = "mips32r6",
                                            target_arch = "mips64",
@@ -98,7 +98,7 @@ libc_enum! {
                                            target_arch = "x86",
                                            target_arch = "x86_64")))]
         PTRACE_GETFPXREGS,
-        #[cfg(all(target_os = "linux", any(target_env = "musl",
+        #[cfg(all(any(target_os = "linux", target_os = "runixos"), any(target_env = "musl",
                                            target_arch = "mips",
                                            target_arch = "mips32r6",
                                            target_arch = "mips64",
@@ -111,34 +111,34 @@ libc_enum! {
         PTRACE_GETEVENTMSG,
         PTRACE_GETSIGINFO,
         PTRACE_SETSIGINFO,
-        #[cfg(all(target_os = "linux", not(any(target_arch = "mips",
+        #[cfg(all(any(target_os = "linux", target_os = "runixos"), not(any(target_arch = "mips",
                                                target_arch = "mips32r6",
                                                target_arch = "mips64",
                                                target_arch = "mips64r6"))))]
         PTRACE_GETREGSET,
-        #[cfg(all(target_os = "linux", not(any(target_arch = "mips",
+        #[cfg(all(any(target_os = "linux", target_os = "runixos"), not(any(target_arch = "mips",
                                                target_arch = "mips32r6",
                                                target_arch = "mips64",
                                                target_arch = "mips64r6"))))]
         PTRACE_SETREGSET,
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         PTRACE_SEIZE,
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         PTRACE_INTERRUPT,
-        #[cfg(all(target_os = "linux", not(any(target_arch = "mips",
+        #[cfg(all(any(target_os = "linux", target_os = "runixos"), not(any(target_arch = "mips",
                                                target_arch = "mips32r6",
                                                target_arch = "mips64",
                                                target_arch = "mips64r6"))))]
         PTRACE_LISTEN,
-        #[cfg(all(target_os = "linux", not(any(target_arch = "mips",
+        #[cfg(all(any(target_os = "linux", target_os = "runixos"), not(any(target_arch = "mips",
                                                target_arch = "mips32r6",
                                                target_arch = "mips64",
                                                target_arch = "mips64r6"))))]
         PTRACE_PEEKSIGINFO,
-        #[cfg(all(target_os = "linux", target_env = "gnu",
+        #[cfg(all(any(target_os = "linux", target_os = "runixos"), target_env = "gnu",
                   any(target_arch = "x86", target_arch = "x86_64")))]
         PTRACE_SYSEMU,
-        #[cfg(all(target_os = "linux", target_env = "gnu",
+        #[cfg(all(any(target_os = "linux", target_os = "runixos"), target_env = "gnu",
                   any(target_arch = "x86", target_arch = "x86_64")))]
         PTRACE_SYSEMU_SINGLESTEP,
     }
@@ -173,7 +173,7 @@ libc_enum! {
 }
 
 #[cfg(all(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_env = "gnu",
     any(
         target_arch = "x86_64",
@@ -196,7 +196,7 @@ libc_enum! {
 }
 
 #[cfg(all(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_env = "gnu",
     any(
         target_arch = "x86_64",
@@ -221,7 +221,7 @@ pub unsafe trait RegisterSet {
 }
 
 #[cfg(all(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_env = "gnu",
     any(
         target_arch = "x86_64",
@@ -312,7 +312,7 @@ fn ptrace_peek(
 ///
 /// [ptrace(2)]: https://www.man7.org/linux/man-pages/man2/ptrace.2.html
 #[cfg(all(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     any(
         all(
             target_arch = "x86_64",
@@ -333,7 +333,7 @@ pub fn getregs(pid: Pid) -> Result<user_regs_struct> {
 ///
 /// [ptrace(2)]: https://www.man7.org/linux/man-pages/man2/ptrace.2.html
 #[cfg(all(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_env = "gnu",
     any(target_arch = "aarch64", target_arch = "riscv64")
 ))]
@@ -343,7 +343,7 @@ pub fn getregs(pid: Pid) -> Result<user_regs_struct> {
 
 /// Get a particular set of user registers, as with `ptrace(PTRACE_GETREGSET, ...)`
 #[cfg(all(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_env = "gnu",
     any(
         target_arch = "x86_64",
@@ -378,7 +378,7 @@ pub fn getregset<S: RegisterSet>(pid: Pid) -> Result<S::Regs> {
 ///
 /// [ptrace(2)]: https://www.man7.org/linux/man-pages/man2/ptrace.2.html
 #[cfg(all(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     any(
         all(
             target_arch = "x86_64",
@@ -407,7 +407,7 @@ pub fn setregs(pid: Pid, regs: user_regs_struct) -> Result<()> {
 ///
 /// [ptrace(2)]: https://www.man7.org/linux/man-pages/man2/ptrace.2.html
 #[cfg(all(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_env = "gnu",
     any(target_arch = "aarch64", target_arch = "riscv64")
 ))]
@@ -417,7 +417,7 @@ pub fn setregs(pid: Pid, regs: user_regs_struct) -> Result<()> {
 
 /// Set a particular set of user registers, as with `ptrace(PTRACE_SETREGSET, ...)`
 #[cfg(all(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_env = "gnu",
     any(
         target_arch = "x86_64",
@@ -554,7 +554,7 @@ pub fn syscall<T: Into<Option<Signal>>>(pid: Pid, sig: T) -> Result<()> {
 /// Thus the the tracee will only be stopped once per syscall,
 /// optionally delivering a signal specified by `sig`.
 #[cfg(all(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_env = "gnu",
     any(target_arch = "x86", target_arch = "x86_64")
 ))]
@@ -588,7 +588,7 @@ pub fn attach(pid: Pid) -> Result<()> {
 /// Attach to a running process, as with `ptrace(PTRACE_SEIZE, ...)`
 ///
 /// Attaches to the process specified in pid, making it a tracee of the calling process.
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 pub fn seize(pid: Pid, options: Options) -> Result<()> {
     unsafe {
         ptrace_other(
@@ -634,7 +634,7 @@ pub fn cont<T: Into<Option<Signal>>>(pid: Pid, sig: T) -> Result<()> {
 /// Stop a tracee, as with `ptrace(PTRACE_INTERRUPT, ...)`
 ///
 /// This request is equivalent to `ptrace(PTRACE_INTERRUPT, ...)`
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 pub fn interrupt(pid: Pid) -> Result<()> {
     unsafe {
         ptrace_other(
@@ -703,7 +703,7 @@ pub fn step<T: Into<Option<Signal>>>(pid: Pid, sig: T) -> Result<()> {
 /// In case the tracee is stopped at a syscall, the syscall will not be executed.
 /// Optionally, the signal specified by `sig` is delivered to the tracee upon continuation.
 #[cfg(all(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_env = "gnu",
     any(target_arch = "x86", target_arch = "x86_64")
 ))]

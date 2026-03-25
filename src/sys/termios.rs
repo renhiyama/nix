@@ -325,13 +325,13 @@ libc_enum! {
         B1500000,
         #[cfg(linux_android)]
         B2000000,
-        #[cfg(any(target_os = "android", all(target_os = "linux", not(target_arch = "sparc64"))))]
+        #[cfg(any(target_os = "android", all(any(target_os = "linux", target_os = "runixos"), not(target_arch = "sparc64"))))]
         B2500000,
-        #[cfg(any(target_os = "android", all(target_os = "linux", not(target_arch = "sparc64"))))]
+        #[cfg(any(target_os = "android", all(any(target_os = "linux", target_os = "runixos"), not(target_arch = "sparc64"))))]
         B3000000,
-        #[cfg(any(target_os = "android", all(target_os = "linux", not(target_arch = "sparc64"))))]
+        #[cfg(any(target_os = "android", all(any(target_os = "linux", target_os = "runixos"), not(target_arch = "sparc64"))))]
         B3500000,
-        #[cfg(any(target_os = "android", all(target_os = "linux", not(target_arch = "sparc64"))))]
+        #[cfg(any(target_os = "android", all(any(target_os = "linux", target_os = "runixos"), not(target_arch = "sparc64"))))]
         B4000000,
     }
     impl TryFrom<libc::speed_t>
@@ -424,7 +424,7 @@ libc_enum! {
         VKILL,
         #[cfg(not(target_os = "haiku"))]
         VLNEXT,
-        #[cfg(not(any(all(target_os = "linux", target_arch = "sparc64"),
+        #[cfg(not(any(all(any(target_os = "linux", target_os = "runixos"), target_arch = "sparc64"),
                 solarish, target_os = "aix", target_os = "haiku")))]
         VMIN,
         VQUIT,
@@ -435,11 +435,11 @@ libc_enum! {
         VSTATUS,
         VSTOP,
         VSUSP,
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         VSWTC,
         #[cfg(any(solarish, target_os = "haiku"))]
         VSWTCH,
-        #[cfg(not(any(all(target_os = "linux", target_arch = "sparc64"),
+        #[cfg(not(any(all(any(target_os = "linux", target_os = "runixos"), target_arch = "sparc64"),
                 solarish, target_os = "aix", target_os = "haiku")))]
         VTIME,
         #[cfg(not(any(target_os = "aix", target_os = "haiku")))]
@@ -450,7 +450,7 @@ libc_enum! {
 }
 
 #[cfg(any(
-    all(target_os = "linux", target_arch = "sparc64"),
+    all(any(target_os = "linux", target_os = "runixos"), target_arch = "sparc64"),
     solarish,
     target_os = "aix",
     target_os = "haiku",
@@ -627,10 +627,10 @@ libc_bitflags! {
         CRTSCTS;
         #[cfg(linux_android)]
         CBAUD;
-        #[cfg(any(target_os = "android", all(target_os = "linux", not(target_arch = "mips"))))]
+        #[cfg(any(target_os = "android", all(any(target_os = "linux", target_os = "runixos"), not(target_arch = "mips"))))]
         CMSPAR;
         #[cfg(any(target_os = "android",
-                  all(target_os = "linux",
+                  all(any(target_os = "linux", target_os = "runixos"),
                       not(any(target_arch = "powerpc", target_arch = "powerpc64")))))]
         CIBAUD;
         #[cfg(linux_android)]

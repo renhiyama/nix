@@ -122,7 +122,7 @@ impl ClockId {
     #[cfg(any(
         target_os = "emscripten",
         target_os = "fuchsia",
-        all(target_os = "linux", target_env = "musl")
+        all(any(target_os = "linux", target_os = "runixos"), target_env = "musl")
     ))]
     pub const CLOCK_SGI_CYCLE: ClockId = ClockId(libc::CLOCK_SGI_CYCLE);
     /// International Atomic Time.

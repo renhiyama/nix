@@ -8,6 +8,7 @@ fn main() {
         freebsd: { target_os = "freebsd" },
         illumos: { target_os = "illumos" },
         linux: { target_os = "linux" },
+        runixos: { target_os = "runixos" },
         macos: { target_os = "macos" },
         netbsd: { target_os = "netbsd" },
         openbsd: { target_os = "openbsd" },
@@ -21,7 +22,7 @@ fn main() {
         apple_targets: { any(ios, macos, watchos, tvos, visionos) },
         bsd: { any(freebsd, dragonfly, netbsd, openbsd, apple_targets) },
         bsd_without_apple: { any(freebsd, dragonfly, netbsd, openbsd) },
-        linux_android: { any(android, linux) },
+        linux_android: { any(android, linux, runixos) },
         freebsdlike: { any(dragonfly, freebsd) },
         netbsdlike: { any(netbsd, openbsd) },
         solarish: { any(illumos, solaris) },
@@ -32,6 +33,7 @@ fn main() {
     println!("cargo:rustc-check-cfg=cfg(bsd)");
     println!("cargo:rustc-check-cfg=cfg(bsd_without_apple)");
     println!("cargo:rustc-check-cfg=cfg(linux_android)");
+    println!("cargo:rustc-check-cfg=cfg(runixos)");
     println!("cargo:rustc-check-cfg=cfg(freebsdlike)");
     println!("cargo:rustc-check-cfg=cfg(netbsdlike)");
     println!("cargo:rustc-check-cfg=cfg(solarish)");

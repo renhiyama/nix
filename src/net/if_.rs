@@ -145,7 +145,7 @@ libc_bitflags!(
         #[cfg(solarish)]
         IFF_PRIVATE as IflagsType;
         /// Driver signals L1 up. Volatile.
-        #[cfg(any(target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         IFF_LOWER_UP;
         /// Interface is in polling mode.
         #[cfg(any(target_os = "dragonfly"))]
@@ -157,7 +157,7 @@ libc_bitflags!(
         #[cfg(solarish)]
         IFF_NOXMIT as IflagsType;
         /// Driver signals dormant. Volatile.
-        #[cfg(any(target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         IFF_DORMANT;
         /// User-requested promisc mode.
         #[cfg(freebsdlike)]
@@ -166,7 +166,7 @@ libc_bitflags!(
         #[cfg(solarish)]
         IFF_NOLOCAL as IflagsType;
         /// Echo sent packets. Volatile.
-        #[cfg(any(target_os = "fuchsia", target_os = "linux"))]
+        #[cfg(any(target_os = "fuchsia", any(target_os = "linux", target_os = "runixos")))]
         IFF_ECHO;
         /// User-requested monitor mode.
         #[cfg(freebsdlike)]
@@ -268,7 +268,7 @@ impl fmt::Display for InterfaceFlags {
 #[cfg(any(
     bsd,
     target_os = "fuchsia",
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     solarish,
 ))]
 mod if_nameindex {
@@ -395,7 +395,7 @@ mod if_nameindex {
 #[cfg(any(
     bsd,
     target_os = "fuchsia",
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     solarish,
 ))]
 pub use if_nameindex::*;

@@ -46,7 +46,7 @@ libc_bitflags! {
         /// Place the mapping at exactly the address specified in `addr`.
         MAP_FIXED;
         /// Place the mapping at exactly the address specified in `addr`, but never clobber an existing range.
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MAP_FIXED_NOREPLACE;
         /// To be used with `MAP_FIXED`, to forbid the system
         /// to select a different address than the one specified.
@@ -59,7 +59,7 @@ libc_bitflags! {
         /// Put the mapping into the first 2GB of the process address space.
         #[cfg(any(all(linux_android,
                       any(target_arch = "x86", target_arch = "x86_64")),
-                  all(target_os = "linux", target_env = "musl", any(target_arch = "x86", target_arch = "x86_64")),
+                  all(any(target_os = "linux", target_os = "runixos"), target_env = "musl", any(target_arch = "x86", target_arch = "x86_64")),
                   all(target_os = "freebsd", target_pointer_width = "64")))]
         MAP_32BIT;
         /// Used for stacks; indicates to the kernel that the mapping should extend downward in memory.
@@ -89,40 +89,40 @@ libc_bitflags! {
         #[cfg(linux_android)]
         MAP_HUGETLB;
         /// Make use of 64KB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MAP_HUGE_64KB;
         /// Make use of 512KB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MAP_HUGE_512KB;
         /// Make use of 1MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MAP_HUGE_1MB;
         /// Make use of 2MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MAP_HUGE_2MB;
         /// Make use of 8MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MAP_HUGE_8MB;
         /// Make use of 16MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MAP_HUGE_16MB;
         /// Make use of 32MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MAP_HUGE_32MB;
         /// Make use of 256MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MAP_HUGE_256MB;
         /// Make use of 512MB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MAP_HUGE_512MB;
         /// Make use of 1GB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MAP_HUGE_1GB;
         /// Make use of 2GB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MAP_HUGE_2GB;
         /// Make use of 16GB huge page (must be supported by the system)
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MAP_HUGE_16GB;
 
         /// Lock the mapped region into memory as with `mlock(2)`.
@@ -187,15 +187,15 @@ impl MapFlags {
     }
 }
 
-#[cfg(any(target_os = "linux", target_os = "netbsd"))]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "netbsd"))]
 libc_bitflags! {
     /// Options for [`mremap`].
     pub struct MRemapFlags: c_int {
         /// Permit the kernel to relocate the mapping to a new virtual address, if necessary.
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MREMAP_MAYMOVE;
         /// Place the mapping at exactly the address specified in `new_address`.
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MREMAP_FIXED;
         /// Place the mapping at exactly the address specified in `new_address`.
         #[cfg(target_os = "netbsd")]
@@ -245,7 +245,7 @@ libc_enum! {
         MADV_UNMERGEABLE,
         /// Preserve the memory of each page but offline the original page.
         #[cfg(any(target_os = "android",
-            all(target_os = "linux", any(
+            all(any(target_os = "linux", target_os = "runixos"), any(
                 target_arch = "aarch64",
                 target_arch = "arm",
                 target_arch = "powerpc",
@@ -455,7 +455,7 @@ pub unsafe fn mmap_anonymous(
 ///
 /// See the `mremap(2)` [man page](https://man7.org/linux/man-pages/man2/mremap.2.html) for
 /// detailed requirements.
-#[cfg(any(target_os = "linux", target_os = "netbsd"))]
+#[cfg(any(target_os = "linux", target_os = "runixos", target_os = "netbsd"))]
 pub unsafe fn mremap(
     addr: NonNull<c_void>,
     old_size: size_t,
@@ -463,7 +463,7 @@ pub unsafe fn mremap(
     flags: MRemapFlags,
     new_address: Option<NonNull<c_void>>,
 ) -> Result<NonNull<c_void>> {
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "runixos"))]
     let ret = unsafe {
         libc::mremap(
             addr.as_ptr(),

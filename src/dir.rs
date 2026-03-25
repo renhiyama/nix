@@ -9,10 +9,10 @@ use std::ffi;
 use std::os::unix::io::{AsRawFd, IntoRawFd, RawFd};
 use std::ptr;
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 use libc::{dirent64 as dirent, readdir64_r as readdir_r};
 
-#[cfg(not(target_os = "linux"))]
+#[cfg(not(any(target_os = "linux", target_os = "runixos")))]
 use libc::{dirent, readdir_r};
 
 /// An open directory.
