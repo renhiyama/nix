@@ -8,7 +8,7 @@ use libc::{self, c_int};
 use std::convert::TryFrom;
 #[cfg(any(
     target_os = "android",
-    all(target_os = "linux", not(target_env = "uclibc")),
+    all(any(target_os = "linux", target_os = "runixos"), not(target_env = "uclibc")),
 ))]
 use std::os::unix::io::{AsRawFd, BorrowedFd};
 
@@ -242,7 +242,7 @@ impl WaitStatus {
         target_os = "android",
         target_os = "freebsd",
         target_os = "haiku",
-        all(target_os = "linux", not(target_env = "uclibc")),
+        all(any(target_os = "linux", target_os = "runixos"), not(target_env = "uclibc")),
     ))]
     unsafe fn from_siginfo(siginfo: &libc::siginfo_t) -> Result<WaitStatus> {
         let si_pid = unsafe { siginfo.si_pid() };
@@ -327,7 +327,7 @@ pub fn wait() -> Result<WaitStatus> {
     target_os = "android",
     target_os = "freebsd",
     target_os = "haiku",
-    all(target_os = "linux", not(target_env = "uclibc")),
+    all(any(target_os = "linux", target_os = "runixos"), not(target_env = "uclibc")),
 ))]
 #[derive(Debug)]
 pub enum Id<'fd> {
@@ -355,7 +355,7 @@ pub enum Id<'fd> {
     target_os = "android",
     target_os = "freebsd",
     target_os = "haiku",
-    all(target_os = "linux", not(target_env = "uclibc")),
+    all(any(target_os = "linux", target_os = "runixos"), not(target_env = "uclibc")),
 ))]
 pub fn waitid(id: Id, flags: WaitPidFlag) -> Result<WaitStatus> {
     let (idtype, idval) = match id {

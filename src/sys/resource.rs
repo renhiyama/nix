@@ -11,7 +11,7 @@ use std::mem;
 
 cfg_if! {
     if #[cfg(any(
-        all(target_os = "linux", any(target_env = "gnu", target_env = "uclibc")),
+        all(any(target_os = "linux", target_os = "runixos"), any(target_env = "gnu", target_env = "uclibc")),
         target_os = "hurd"
     ))]{
         use libc::{__rlimit_resource_t, rlimit};
@@ -19,7 +19,7 @@ cfg_if! {
         bsd,
         target_os = "android",
         target_os = "aix",
-        all(target_os = "linux", not(target_env = "gnu")),
+        all(any(target_os = "linux", target_os = "runixos"), not(target_env = "gnu")),
         target_os = "cygwin"
     ))]{
         use libc::rlimit;
@@ -43,14 +43,14 @@ libc_enum! {
     // https://gcc.gnu.org/legacy-ml/gcc/2015-08/msg00441.html
     // https://github.com/rust-lang/libc/blob/master/src/unix/linux_like/linux/gnu/mod.rs
     #[cfg_attr(any(
-            all(target_os = "linux", any(target_env = "gnu", target_env = "uclibc")),
+            all(any(target_os = "linux", target_os = "runixos"), any(target_env = "gnu", target_env = "uclibc")),
             target_os = "hurd"
         ), repr(u32))]
     #[cfg_attr(any(
             bsd,
             target_os = "android",
             target_os = "aix",
-            all(target_os = "linux", not(any(target_env = "gnu", target_env = "uclibc"))),
+            all(any(target_os = "linux", target_os = "runixos"), not(any(target_env = "gnu", target_env = "uclibc"))),
             target_os = "cygwin"
         ), repr(i32))]
     #[non_exhaustive]
@@ -125,7 +125,7 @@ libc_enum! {
         /// using sched_setscheduler and  sched_set‐ param.
         RLIMIT_RTPRIO,
 
-        #[cfg(any(target_os = "linux"))]
+        #[cfg(any(any(target_os = "linux", target_os = "runixos")))]
         /// A limit (in microseconds) on the amount of CPU time that a process
         /// scheduled under a real-time scheduling policy may con‐ sume without
         /// making a blocking system call.
@@ -180,7 +180,7 @@ pub fn getrlimit(resource: Resource) -> Result<(rlim_t, rlim_t)> {
 
     cfg_if! {
         if #[cfg(any(
-            all(target_os = "linux", any(target_env = "gnu", target_env = "uclibc")),
+            all(any(target_os = "linux", target_os = "runixos"), any(target_env = "gnu", target_env = "uclibc")),
             target_os = "hurd"
         ))] {
             let res = unsafe { libc::getrlimit(resource as __rlimit_resource_t, old_rlim.as_mut_ptr()) };
@@ -236,7 +236,7 @@ pub fn setrlimit(
     };
     cfg_if! {
         if #[cfg(any(
-            all(target_os = "linux", any(target_env = "gnu", target_env = "uclibc")),
+            all(any(target_os = "linux", target_os = "runixos"), any(target_env = "gnu", target_env = "uclibc")),
             target_os = "hurd",
         ))]{
             let res = unsafe { libc::setrlimit(resource as __rlimit_resource_t, &new_rlim as *const rlimit) };
@@ -259,7 +259,7 @@ libc_enum! {
         /// Resource usage for all the children that have terminated and been waited for.
         RUSAGE_CHILDREN,
 
-        #[cfg(any(target_os = "linux", target_os = "freebsd", target_os = "openbsd"))]
+        #[cfg(any(any(target_os = "linux", target_os = "runixos"), target_os = "freebsd", target_os = "openbsd"))]
         /// Resource usage for the calling thread.
         RUSAGE_THREAD,
     }

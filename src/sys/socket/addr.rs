@@ -146,10 +146,10 @@ pub enum AddressFamily {
     #[cfg(linux_android)]
     Llc = libc::AF_LLC,
     /// InfiniBand native addressing
-    #[cfg(all(target_os = "linux", not(target_env = "uclibc")))]
+    #[cfg(all(any(target_os = "linux", target_os = "runixos"), not(target_env = "uclibc")))]
     Ib = libc::AF_IB,
     /// Multiprotocol Label Switching
-    #[cfg(all(target_os = "linux", not(target_env = "uclibc")))]
+    #[cfg(all(any(target_os = "linux", target_os = "runixos"), not(target_env = "uclibc")))]
     Mpls = libc::AF_MPLS,
     /// Controller Area Network automotive bus protocol
     #[cfg(linux_android)]
@@ -198,7 +198,7 @@ pub enum AddressFamily {
     #[cfg(linux_android)]
     Alg = libc::AF_ALG,
     /// Near field communication
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "runixos"))]
     Nfc = libc::AF_NFC,
     /// VMWare VSockets protocol for hypervisor-guest interaction.
     #[cfg(any(linux_android, apple_targets))]

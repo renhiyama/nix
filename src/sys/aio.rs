@@ -54,7 +54,7 @@ libc_enum! {
         O_SYNC,
         /// on supported operating systems only, do it like `fdatasync`
         #[cfg(any(apple_targets,
-                  target_os = "linux",
+                  any(target_os = "linux", target_os = "runixos"),
                   target_os = "freebsd",
                   netbsdlike))]
         O_DSYNC

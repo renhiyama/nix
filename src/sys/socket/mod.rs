@@ -238,13 +238,13 @@ pub enum SockProtocol {
 impl SockProtocol {
     /// The Controller Area Network raw socket protocol
     /// ([ref](https://docs.kernel.org/networking/can.html#how-to-use-socketcan))
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "runixos"))]
     #[allow(non_upper_case_globals)]
     pub const CanRaw: SockProtocol = SockProtocol::Icmp; // Matches libc::CAN_RAW
 
     /// The Controller Area Network broadcast manager protocol
     /// ([ref](https://docs.kernel.org/networking/can.html#how-to-use-socketcan))
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "runixos"))]
     #[allow(non_upper_case_globals)]
     pub const CanBcm: SockProtocol = SockProtocol::NetlinkUserSock; // Matches libc::CAN_BCM
 
@@ -385,7 +385,7 @@ libc_bitflags! {
                   target_os = "freebsd"))]
         MSG_WAITFORONE;
         /// Indicates that this message is not a user message but an SCTP notification.
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         MSG_NOTIFICATION;
     }
 }
@@ -912,7 +912,7 @@ pub enum ControlMessageOwned {
     ///
     /// `UdpGroSegment` socket option should be enabled on a socket
     /// to allow receiving GRO packets.
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "runixos"))]
     #[cfg(feature = "net")]
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
     UdpGroSegments(i32),
@@ -940,7 +940,7 @@ pub enum ControlMessageOwned {
     Ipv6RecvErr(libc::sock_extended_err, Option<sockaddr_in6>),
 
     /// `SOL_TLS` messages of type `TLS_GET_RECORD_TYPE`
-    #[cfg(any(target_os = "linux"))]
+    #[cfg(any(any(target_os = "linux", target_os = "runixos")))]
     TlsGetRecordType(TlsGetRecordType),
 
     /// Catch-all variant for unimplemented cmsg types.
@@ -961,7 +961,7 @@ pub struct Timestamps {
 
 /// These constants correspond to TLS 1.2 message types, as defined in
 /// RFC 5246, Appendix A.1
-#[cfg(any(target_os = "linux"))]
+#[cfg(any(any(target_os = "linux", target_os = "runixos")))]
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 #[repr(u8)]
 #[non_exhaustive]
@@ -973,7 +973,7 @@ pub enum TlsGetRecordType {
     Unknown(u8),
 }
 
-#[cfg(any(target_os = "linux"))]
+#[cfg(any(any(target_os = "linux", target_os = "runixos")))]
 impl From<u8> for TlsGetRecordType {
     fn from(x: u8) -> Self {
         match x {
@@ -1087,7 +1087,7 @@ impl ControlMessageOwned {
                 let dl = unsafe { ptr::read_unaligned(p as *const libc::sockaddr_in) };
                 ControlMessageOwned::Ipv4OrigDstAddr(dl)
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             #[cfg(feature = "net")]
             (libc::SOL_UDP, libc::UDP_GRO) => {
                 let gso_size: i32 = unsafe { ptr::read_unaligned(p as *const _) };
@@ -1116,7 +1116,7 @@ impl ControlMessageOwned {
                 let dl = unsafe { ptr::read_unaligned(p as *const libc::sockaddr_in6) };
                 ControlMessageOwned::Ipv6OrigDstAddr(dl)
             },
-            #[cfg(any(target_os = "linux"))]
+            #[cfg(any(any(target_os = "linux", target_os = "runixos")))]
             (libc::SOL_TLS, libc::TLS_GET_RECORD_TYPE) => {
                 let content_type = unsafe { ptr::read_unaligned(p as *const u8) };
                 ControlMessageOwned::TlsGetRecordType(content_type.into())
@@ -1265,7 +1265,7 @@ pub enum ControlMessage<'a> {
     /// passed through this control message.
     /// Send buffer should consist of multiple fixed-size wire payloads
     /// following one by one, and the last, possibly smaller one.
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "runixos"))]
     #[cfg(feature = "net")]
     #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
     UdpGsoSegments(&'a u16),
@@ -1335,7 +1335,7 @@ pub enum ControlMessage<'a> {
     /// For further information, please refer to the
     /// [`tc-etf(8)`](https://man7.org/linux/man-pages/man8/tc-etf.8.html) man
     /// page.
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "runixos"))]
     TxTime(&'a u64),
 
     /// Configure DSCP / IP TOS for outgoing v4 packets.
@@ -1374,14 +1374,14 @@ impl ControlMessage<'_> {
     /// The value of CMSG_LEN on this message.
     /// Safe because CMSG_LEN is always safe
     #[cfg(any(target_os = "android",
-              all(target_os = "linux", not(any(target_env = "musl", target_env = "ohos"))),
+              all(any(target_os = "linux", target_os = "runixos"), not(any(target_env = "musl", target_env = "ohos"))),
               target_os = "cygwin"))]
     fn cmsg_len(&self) -> usize {
         unsafe{CMSG_LEN(self.len() as libc::c_uint) as usize}
     }
 
     #[cfg(not(any(target_os = "android",
-              all(target_os = "linux", not(any(target_env = "musl", target_env = "ohos"))),
+              all(any(target_os = "linux", target_os = "runixos"), not(any(target_env = "musl", target_env = "ohos"))),
               target_os = "cygwin")))]
     fn cmsg_len(&self) -> libc::c_uint {
         unsafe{CMSG_LEN(self.len() as libc::c_uint)}
@@ -1437,7 +1437,7 @@ impl ControlMessage<'_> {
             ControlMessage::AlgSetAeadAssoclen(len) => {
                 len as *const _ as *const u8
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             #[cfg(feature = "net")]
             ControlMessage::UdpGsoSegments(gso_size) => {
                 gso_size as *const _ as *const u8
@@ -1465,7 +1465,7 @@ impl ControlMessage<'_> {
             ControlMessage::RxqOvfl(drop_count) => {
                 drop_count as *const _ as *const u8
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             ControlMessage::TxTime(tx_time) => {
                 tx_time as *const _ as *const u8
             },
@@ -1515,7 +1515,7 @@ impl ControlMessage<'_> {
             ControlMessage::AlgSetAeadAssoclen(len) => {
                 mem::size_of_val(len)
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             #[cfg(feature = "net")]
             ControlMessage::UdpGsoSegments(gso_size) => {
                 mem::size_of_val(gso_size)
@@ -1544,7 +1544,7 @@ impl ControlMessage<'_> {
             ControlMessage::RxqOvfl(drop_count) => {
                 mem::size_of_val(drop_count)
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             ControlMessage::TxTime(tx_time) => {
                 mem::size_of_val(tx_time)
             },
@@ -1572,7 +1572,7 @@ impl ControlMessage<'_> {
             #[cfg(linux_android)]
             ControlMessage::AlgSetIv(_) | ControlMessage::AlgSetOp(_) |
                 ControlMessage::AlgSetAeadAssoclen(_) => libc::SOL_ALG,
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             #[cfg(feature = "net")]
             ControlMessage::UdpGsoSegments(_) => libc::SOL_UDP,
             #[cfg(any(linux_android, target_os = "netbsd", apple_targets))]
@@ -1593,7 +1593,7 @@ impl ControlMessage<'_> {
             ControlMessage::Ipv6HopLimit(_) => libc::IPPROTO_IPV6,
             #[cfg(any(linux_android, target_os = "fuchsia"))]
             ControlMessage::RxqOvfl(_) => libc::SOL_SOCKET,
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             ControlMessage::TxTime(_) => libc::SOL_SOCKET,
             #[cfg(any(linux_android, target_os = "freebsd"))]
             #[cfg(feature = "net")]
@@ -1624,7 +1624,7 @@ impl ControlMessage<'_> {
             ControlMessage::AlgSetAeadAssoclen(_) => {
                 libc::ALG_SET_AEAD_ASSOCLEN
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             #[cfg(feature = "net")]
             ControlMessage::UdpGsoSegments(_) => {
                 libc::UDP_SEGMENT
@@ -1649,7 +1649,7 @@ impl ControlMessage<'_> {
             ControlMessage::RxqOvfl(_) => {
                 libc::SO_RXQ_OVFL
             },
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "runixos"))]
             ControlMessage::TxTime(_) => {
                 libc::SCM_TXTIME
             },
@@ -2284,13 +2284,13 @@ impl Backlog {
     /// Sets the listen queue size to system `SOMAXCONN` value
     pub const MAXCONN: Self = Self(libc::SOMAXCONN);
     /// Sets the listen queue size to -1 for system supporting it
-    #[cfg(any(target_os = "linux", target_os = "freebsd"))]
+    #[cfg(any(any(target_os = "linux", target_os = "runixos"), target_os = "freebsd"))]
     pub const MAXALLOWABLE: Self = Self(-1);
 
     /// Create a `Backlog`, an `EINVAL` will be returned if `val` is invalid.
     pub fn new<I: Into<i32>>(val: I) -> Result<Self> {
         cfg_if! {
-            if #[cfg(any(target_os = "linux", target_os = "freebsd"))] {
+            if #[cfg(any(any(target_os = "linux", target_os = "runixos"), target_os = "freebsd"))] {
                 const MIN: i32 = -1;
             } else {
                 const MIN: i32 = 0;
@@ -2358,7 +2358,7 @@ pub fn accept(sockfd: RawFd) -> Result<RawFd> {
     target_os = "emscripten",
     target_os = "fuchsia",
     solarish,
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
 ))]
 pub fn accept4(sockfd: RawFd, flags: SockFlag) -> Result<RawFd> {
     let res = unsafe {

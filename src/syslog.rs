@@ -17,7 +17,7 @@ use std::ptr;
 // if the string it points to is changed, syslog() may start prepending the changed
 // string, and if the string it points to ceases to exist, the results are
 // undefined.  Most portable is to use a string constant.
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 pub fn openlog(
     ident: Option<&'static std::ffi::CStr>,
     logopt: LogFlags,
@@ -42,7 +42,7 @@ pub fn openlog(
 /// The parameter `ident` is a string that will be prepended to every message. The `logopt`
 /// argument specifies logging options. The `facility` parameter encodes a default facility to be
 /// assigned to all messages that do not have an explicit facility encoded.
-#[cfg(not(target_os = "linux"))]
+#[cfg(not(any(target_os = "linux", target_os = "runixos")))]
 pub fn openlog<S: AsRef<OsStr> + ?Sized>(
     ident: Option<&S>,
     logopt: LogFlags,

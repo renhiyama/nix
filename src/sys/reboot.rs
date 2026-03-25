@@ -8,7 +8,7 @@ use cfg_if::cfg_if;
 use std::convert::Infallible;
 
 cfg_if! {
-    if #[cfg(target_os = "linux")] {
+    if #[cfg(any(target_os = "linux", target_os = "runixos"))] {
         use std::mem::drop;
 
         libc_enum! {

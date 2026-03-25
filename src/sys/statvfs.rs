@@ -33,13 +33,13 @@ libc_bitflags!(
         #[cfg(linux_android)]
         ST_MANDLOCK;
         /// Write on file/directory/symlink
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         ST_WRITE;
         /// Append-only file
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         ST_APPEND;
         /// Immutable file
-        #[cfg(target_os = "linux")]
+        #[cfg(any(target_os = "linux", target_os = "runixos"))]
         ST_IMMUTABLE;
         /// Do not update access times on files
         #[cfg(linux_android)]
@@ -48,7 +48,7 @@ libc_bitflags!(
         #[cfg(linux_android)]
         ST_NODIRATIME;
         /// Update access time relative to modify/change time
-        #[cfg(any(target_os = "android", all(target_os = "linux", not(target_env = "musl"), not(target_env = "ohos"))))]
+        #[cfg(any(target_os = "android", all(any(target_os = "linux", target_os = "runixos"), not(target_env = "musl"), not(target_env = "ohos"))))]
         ST_RELATIME;
     }
 );

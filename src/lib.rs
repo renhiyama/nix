@@ -152,7 +152,7 @@ feature! {
 }
 #[cfg(any(
     freebsdlike,
-    all(target_os = "linux", not(target_env = "ohos")),
+    all(any(target_os = "linux", target_os = "runixos"), not(target_env = "ohos")),
     target_os = "netbsd"
 ))]
 feature! {
@@ -181,7 +181,7 @@ feature! {
 // This can be implemented for other platforms as soon as libc
 // provides bindings for them.
 #[cfg(all(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     any(
         target_arch = "aarch64",
         target_arch = "s390x",
@@ -202,7 +202,7 @@ mod poll_timeout;
 #[cfg(any(
     target_os = "freebsd",
     target_os = "haiku",
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "netbsd",
     apple_targets
 ))]

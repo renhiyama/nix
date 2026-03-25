@@ -16,12 +16,12 @@ const fn zero_init_timespec() -> timespec {
 }
 
 #[cfg(any(
-    all(feature = "time", any(target_os = "android", target_os = "linux")),
+    all(feature = "time", any(target_os = "android", any(target_os = "linux", target_os = "runixos"))),
     all(
         any(
             target_os = "freebsd",
             solarish,
-            target_os = "linux",
+            any(target_os = "linux", target_os = "runixos"),
             target_os = "netbsd"
         ),
         feature = "time",

@@ -188,17 +188,17 @@ pub fn mknodat<Fd: std::os::fd::AsFd, P: ?Sized + NixPath>(
     Errno::result(res).map(drop)
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 pub const fn major(dev: dev_t) -> u64 {
     ((dev >> 32) & 0xffff_f000) | ((dev >> 8) & 0x0000_0fff)
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 pub const fn minor(dev: dev_t) -> u64 {
     ((dev >> 12) & 0xffff_ff00) | ((dev) & 0x0000_00ff)
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "runixos"))]
 pub const fn makedev(major: u64, minor: u64) -> dev_t {
     ((major & 0xffff_f000) << 32)
         | ((major & 0x0000_0fff) << 8)
@@ -363,7 +363,7 @@ pub fn utimes<P: ?Sized + NixPath>(
 ///
 /// [lutimes(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/lutimes.html).
 #[cfg(any(
-    target_os = "linux",
+    any(target_os = "linux", target_os = "runixos"),
     target_os = "haiku",
     apple_targets,
     target_os = "freebsd",
